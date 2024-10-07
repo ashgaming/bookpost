@@ -85,6 +85,7 @@ I called McCarthy, one of the French garcons, and asked him the cause of the con
   }
     , [])
 
+  const paragraphs = story.split(/\n+/).filter(p => p.trim() !== '');
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-6">
@@ -114,7 +115,17 @@ I called McCarthy, one of the French garcons, and asked him the cause of the con
 
           </div>
           <div className="bg-gray-50 p-4 rounded-lg shadow-inner">
-            <p className="text-gray-700 text-lg leading-relaxed">{story || 'Story content goes here...'}</p>
+            {paragraphs.map((para, index) => (
+              <p
+                key={index}
+                className="mb-4 text-justify whitespace-pre-wrap text-gray-700 text-lg leading-relaxed "
+                style={{ textIndent: '2em', marginBottom: '1.5em' }} // Indent first line and add space after each paragraph
+              >
+                {para}
+              </p>
+            ))}
+            <p>****</p>
+
           </div>
         </section>
 

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ExtraBookDetails } from '../../Actions/BookAction';
 import AddComment from '../../Components/Layout/AddComment';
 import Stars from '../../Components/Element/Stars';
 
@@ -70,7 +69,7 @@ export default function DisplayBook() {
 
   useEffect(() => {
     if (id) {
-      ExtraBookDetails(id);
+     
     }
   }, [id]);
 

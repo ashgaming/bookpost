@@ -1,30 +1,56 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useRef } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { loginUser } from '../../Redux/Action/UserAcrion';
+import { useSelector } from 'react-redux';
+import { USER_DETAILS_REQUEST, USER_LOGIN_ERROR } from '../../Redux/Constant/UserConstant';
 const image = require('../AuthScreen/assets/log.webp');
 
-export default function LoginScreen() {
+const LoginScreen = ({dispatch}) => {
+    const usernameRef = useRef(null);
+    const passwordRef = useRef(null);
+    const navigate = useNavigate();
+
+    const userLogin = useSelector(state=>state.userLogin)
+    const { loading,error,userInfo } = userLogin
+
+    const SubmitHandler = (e) =>{
+        e.preventDefault();
+        const name = usernameRef.current?.value;
+        const pass = passwordRef.current?.value;
+    
+        dispatch(loginUser(name,pass));
+    }
+
+    useEffect(()=>{
+        if(userInfo?.token){
+            navigate('/');
+        }else{
+            return;
+        }
+    },[userInfo])
+
     return (
         <>
         <div className="bg-sky-100 flex justify-center items-center h-screen">
 
             <div className="w-1/2 h-screen hidden lg:block">
-                <img src={image} alt="Placeholder" className="object-cover w-full h-full" />
+                <img src={image} alt="image" className="object-cover w-full h-full" />
             </div>
             <div className="lg:p-36 md:p-52 sm:20 p-8 w-full lg:w-1/2">
                 <h1 className="text-2xl font-semibold mb-4">Login</h1>
-                <form action="#" method="POST">
+                <form onSubmit={(e)=> SubmitHandler(e)}>
                     <div className="mb-4 bg-sky-100">
-                        <label for="username" className="block text-gray-600">Username</label>
-                        <input type="text" id="username" name="username" className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" autocomplete="off" />
+                        <label htmlFor="username" className="block text-gray-600">Username</label>
+                        <input type="text" ref={usernameRef} id="username" name="username" className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" autoComplete="off" />
                     </div>
                     <div className="mb-4">
-                        <label for="password" className="block text-gray-800">Password</label>
-                        <input type="password" id="password" name="password" className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" autocomplete="off" />
+                        <label htmlFor="password" className="block text-gray-800">Password</label>
+                        <input type="password" ref={passwordRef} id="password" name="password" className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" autoComplete="off" />
                     </div>
                  
                     <div className="mb-4 flex items-center">
                         <input type="checkbox" id="remember" name="remember" className="text-red-500" />
-                            <label for="remember" className="text-green-900 ml-2">Remember Me</label>
+                            <label htmlFor="remember" className="text-green-900 ml-2">Remember Me</label>
                     </div>
                   
                     <div className="mb-6 text-blue-500">
@@ -42,3 +68,5 @@ export default function LoginScreen() {
         </>
     )
 }
+
+export default LoginScreen;

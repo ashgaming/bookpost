@@ -1,15 +1,10 @@
 import React, { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ExtraBookDetails } from '../../Actions/BookAction';
 
 export default function DisplayChapterk() {
   const { id } = useParams();
 
-  useEffect(() => {
-    if (id) {
-      ExtraBookDetails(id);
-    }
-  }, [id]);
+  
 
   return (
     <div className="mt-6 bg-gray-50">

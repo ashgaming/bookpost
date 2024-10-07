@@ -15,14 +15,15 @@ import CreateStory from './Screen/AddStoryScreen/CreateStory';
 import ListStoriesScreen from './Screen/AddStoryScreen/ListStoryiesScreen';
 import ListChapterScreen from './Screen/AddStoryScreen/ListChapterScreen';
 import EditChapter from './Screen/AddStoryScreen/EditChapter';
+import { useDispatch } from 'react-redux';
 
 // Layout component to handle Header visibility
 function Layout({ children }) {
   const { pathname } = useLocation();
-
+  
   // Define paths where you want to hide the header
   const noHeaderRoutes = ['/login', '/register','/Login', '/Register'];
-
+  
   return (
     <div>
       {/* Conditionally render Header based on the current route */}
@@ -33,6 +34,7 @@ function Layout({ children }) {
 }
 
 function App() {
+  const dispatch = useDispatch();
   const auth = [
     { path: '/', component: HomeScreen },
     { path: '/login', component: LoginScreen },
@@ -56,7 +58,9 @@ function App() {
         <Layout>
           <Routes>
             {auth.map((a) => (
-              <Route path={a.path} element={<a.component />} key={a.path} />
+              <Route path={a.path} 
+              element={<a.component dispatch={dispatch} />} 
+              key={a.path} />
             ))}
           </Routes>
         </Layout>

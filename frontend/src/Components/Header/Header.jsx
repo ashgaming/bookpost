@@ -1,14 +1,24 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { logoutUser } from '../../Redux/Action/UserAcrion';
 
 export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
+    const dispatch = useDispatch();
+    const userLogin = useSelector(state=>state.userLogin)
+    const { userInfo } = userLogin
     const navigation = [
         { name: 'Home', path: '/' },
         { name: 'About', path: '/about' },
         { name: 'Story', path: '/story-option' },
-        { name: 'Login', path: '/Login' }, 
+        !userInfo && { name: 'Login', path: '/Login' }, 
     ];
+
+    const logoutHandler = () => {
+        dispatch(logoutUser()); 
+    }
+
 
     return (
         <header>
@@ -40,6 +50,15 @@ export default function Header() {
                             {nav.name}
                         </Link>
                     ))}
+
+                    {
+                        userInfo && <button
+                        onClick={logoutHandler}
+                        className='mx-2 justify-center align-middle text-md no-underline text-grey-darkest hover:text-blue-dark'
+                    >
+                        Logout
+                    </button>
+                    }
 
                 </div>
             </nav>
