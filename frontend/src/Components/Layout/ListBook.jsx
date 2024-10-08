@@ -1,18 +1,19 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { BookCover } from '../Book/BookCover'
+import { listStory } from '../../Redux/Action/StoryAction'
+import { useDispatch, useSelector } from 'react-redux'
 
 const ListBook = () => {
+    const dispatch = useDispatch()
+    const listStoryy = useSelector(state => state.listStory)
+    const { loading, error, Books } = listStoryy
 
-    const Books = [
-        {
-            id:1,
-            name: "Nature Image",
-            description: "This is a beautiful nature image placeholder. You can replace it with your own image.",
-            url: "https://images.unsplash.com/photo-1516205651411-aef33a44f7c2?auto=format&fit=crop&q=80&w=1528&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-        },
-      
+    useEffect(() => {
+        if (Books === undefined) {
+            dispatch(listStory());
+        }
+    }, [Books])
 
-    ]
 
     return (
         <>
@@ -21,10 +22,10 @@ const ListBook = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 
                     {
-                        Books.map((book, index) => (
-                          
-                                <BookCover Book={book} key={index}/>
-                          
+                        Books && Books.map((book, index) => (
+
+                            <BookCover Book={book} key={index} />
+
                         ))
                     }
 

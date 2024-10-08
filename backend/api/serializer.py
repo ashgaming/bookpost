@@ -4,6 +4,7 @@ from datetime import datetime
 from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import User
+from .models import Story , Chapter , Review
  
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -64,3 +65,23 @@ class UserSerializersWithToken(UserSerializer):
     def get_token(self,obj):
         token = RefreshToken.for_user(obj)
         return str(token.access_token)
+    
+class StoryListSerializer(serializers.ModelSerializer):
+     class Meta:
+        model = Story
+        fields = ['_id','name','cover','summary']
+
+class StorySerializer(serializers.ModelSerializer):
+     class Meta:
+        model = Story
+        fields = '__all__'
+
+class ChapterListSerializer(serializers.ModelSerializer):
+     class Meta:
+        model = Chapter
+        fields = ['_id','title','cover']
+
+class ChapterSerializer(serializers.ModelSerializer):
+     class Meta:
+        model = Chapter
+        fields = '__all__'

@@ -83,7 +83,6 @@ export const userRegisterReducer = (  state = {
     }
 }
 
-
 export const userDetailsReducer = (  state = {
     loading: false,
 } ,action) => {
