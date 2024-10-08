@@ -9,26 +9,26 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 
 
 const initialState = {
-   /* cart: {
-        cartItems: cartItemsFromStorage,
-        shippingAddress: shippingAddressFromStorage,
-        paymentMethod: paymentMethodFromStorage,
-    },
-    userLogin: { userInfo: userInfoFromStorage } */
+    /* cart: {
+         cartItems: cartItemsFromStorage,
+         shippingAddress: shippingAddressFromStorage,
+         paymentMethod: paymentMethodFromStorage,
+     },
+     userLogin: { userInfo: userInfoFromStorage } */
 }
 
 
 const middleware = [thunk]
-
+/*
 const store = createStore(combineReducer, initialState,
     composeWithDevTools (applyMiddleware(...middleware),
     ))
-    
-    
-    
-    /*
-    const store = createStore(combineReducer, initialState,
+   */
+
+
+
+const store = createStore(combineReducer, initialState,
     applyMiddleware(...middleware))
-    
-    */
+
+
 export default store
