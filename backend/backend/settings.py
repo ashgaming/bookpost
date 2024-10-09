@@ -25,7 +25,11 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG',default=False)
 
-ALLOWED_HOSTS = ['http://localhost:3000','https://bookpost-frontend.onrender.com/','127.0.0.1']
+ALLOWED_HOSTS = ['http://localhost:3000',
+                 'https://bookpost-frontend.onrender.com/',
+                 '127.0.0.1',
+                 os.environ.get('REDIS')
+                 ]
 
 
 # Application definition
@@ -171,6 +175,16 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": os.environ.get("REDIS"),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
 
 
 # Internationalization
