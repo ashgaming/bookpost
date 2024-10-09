@@ -1,30 +1,36 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { listAdminChapter } from "../../Redux/Action/StoryAction";
+import { useSelector } from "react-redux";
 
-const ListChapterScreen = () => {
+const ListChapterScreen = ({dispatch}) => {
     const {storyid} = useParams();
     const navigate = useNavigate()
+
+    const chapterList = useSelector(state=>state.listAdminChapter)
+    const {loading,error,chapters} = chapterList
+
+    console.log(chapters)
+    useEffect(()=>{
+        dispatch(listAdminChapter(storyid))
+    },[])
+
     const thlist = [
+        'Id',
         'name',
-        'category',
         'Created At',
-        'Total Chapter',
+        'views',
+        'likes',
         'Status'
     ]
-
-    const list = [{
-        name: 'Cup of Tea',
-        createAt: 'Jan 21, 2020',
-        category: 'Romantic',
-        chapterCount: 5,
-        status: 'Active',
-        id:1
-    }]
+    
 
     const PressHandler = (e,id) =>{
         e.preventDefault();
         navigate(`/add/story/${storyid}/chapter/${id}/edit`);
     }
+
+    if(chapters===undefined) return null;
     return (
         <div className="bg-white p-8 rounded-md w-full">
             <div className="flex items-center justify-between pb-6">
@@ -79,24 +85,27 @@ const ListChapterScreen = () => {
                             </thead>
                             <tbody>
                                 {
-                                    list.map((item, index) => (
-                                        <tr className='bg-slate-50 hover:bg-yellow-200' onClick={e=>PressHandler(e,item.id)}>
-                                          
-                                                <td className="px-5 py-5 border-b border-gray-200 text-sm">
-                                                    <p className="text-gray-900 whitespace-no-wrap">
-                                                        {item.name}
-                                                    </p>
-                                                </td>
-                                                <td className="px-5 py-5 border-b border-gray-200 text-sm">
-                                                    <p className="text-gray-900 whitespace-no-wrap">{item.category}</p>
-                                                </td>
+                                    chapters && chapters.map((item, index) => (
+                                        <tr className='bg-slate-50 hover:bg-yellow-200' onClick={e=>PressHandler(e,item._id)} key={index}>
                                                 <td className="px-5 py-5 border-b border-gray-200  text-sm">
+                                                    <p className="text-gray-900 whitespace-no-wrap">{item._id}</p>
+                                                </td>
+                                                <td className="px-5 py-5 border-b border-gray-200 text-sm">
                                                     <p className="text-gray-900 whitespace-no-wrap">
-                                                        {item.createAt}
+                                                        {item.title}
                                                     </p>
                                                 </td>
                                                 <td className="px-5 py-5 border-b border-gray-200  text-sm">
-                                                    <p className="text-gray-900 whitespace-no-wrap">{item.chapterCount}</p>
+                                                    <p className="text-gray-900 whitespace-no-wrap">
+                                                        {new Date(item.createdAt).toLocaleDateString() }
+                                                    </p>
+                                                </td>
+                                                <td className="px-5 py-5 border-b border-gray-200  text-sm">
+                                                    <p className="text-gray-900 whitespace-no-wrap">{item.views}</p>
+                                                </td>
+
+                                                <td className="px-5 py-5 border-b border-gray-200  text-sm">
+                                                    <p className="text-gray-900 whitespace-no-wrap">{item.likes}</p>
                                                 </td>
                                                 <td className="px-5 py-5 border-b border-gray-200  text-sm">
                                                     <span className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
@@ -104,7 +113,7 @@ const ListChapterScreen = () => {
                                                             aria-hidden
                                                             className="absolute inset-0 bg-green-200 opacity-50 rounded-full"
                                                         ></span>
-                                                        <span className="relative">{item.status}</span>
+                                                        <span className="relative">{item.status || 'Active'}</span>
                                                     </span>
                                                 </td>
                                            

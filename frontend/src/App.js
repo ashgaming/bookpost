@@ -20,10 +20,10 @@ import { useDispatch } from 'react-redux';
 // Layout component to handle Header visibility
 function Layout({ children }) {
   const { pathname } = useLocation();
-  
+
   // Define paths where you want to hide the header
-  const noHeaderRoutes = ['/login', '/register','/Login', '/Register'];
-  
+  const noHeaderRoutes = ['/login', '/register', '/Login', '/Register'];
+
   return (
     <div>
       {/* Conditionally render Header based on the current route */}
@@ -40,17 +40,22 @@ function App() {
     { path: '/login', component: LoginScreen },
     { path: '/register', component: RegisterScreen },
     { path: '/book/:id', component: DisplayBook },
-    { path: '/story-option', component: StoryOption },
     { path: '/about', component: AboutUs },
     { path: '/chapter/:id', component: DisplayChapter },
     { path: '/story/:storyid/chapter/:chapterid', component: ReadChapterScreen },
+
+  ];
+
+  const adminAuth = [
+    { path: '/test', component: TestScreen },
+    { path: '/story-option', component: StoryOption },
     { path: '/create-story', component: CreateStory },
     { path: '/list-story', component: ListStoriesScreen },
     { path: 'add/story/:storyid', component: ListChapterScreen },
     { path: 'add/story/:storyid/add', component: AddChapterScreen },
     { path: 'add/story/:storyid/chapter/:chapterid/edit', component: EditChapter },
-    { path: '/test', component: TestScreen },
-  ];
+
+  ]
 
   return (
     <div className="App bg-slate-50">
@@ -58,9 +63,15 @@ function App() {
         <Layout>
           <Routes>
             {auth.map((a) => (
-              <Route path={a.path} 
-              element={<a.component dispatch={dispatch} />} 
-              key={a.path} />
+              <Route path={a.path}
+                element={<a.component dispatch={dispatch} />}
+                key={a.path} />
+            ))}
+
+            {adminAuth.map((a) => (
+              <Route path={a.path}
+                element={<a.component dispatch={dispatch} />}
+                key={a.path} />
             ))}
           </Routes>
         </Layout>

@@ -63,9 +63,10 @@ const ListChapter = () => {
                         <Link to={`/story/${id}/chapter/${chapter._id}`} className="block w-full">
                             <img
                                 className="object-cover w-full h-48 rounded-t-xl transition duration-300 transform hover:scale-105"
-                                src={ `http://127.0.0.1:8000/${chapter.cover}` } // Use resolved URL or fallback
+                                src={ `http://127.0.0.1:8000/${chapter.cover.slice(32)}` } // Use resolved URL or fallback
                                 alt={`Chapter cover for ${chapter.title}`}
                             />
+
                         </Link>
 
                         <div className="relative flex flex-col items-start p-4 bg-white border-t border-gray-200 rounded-b-xl">

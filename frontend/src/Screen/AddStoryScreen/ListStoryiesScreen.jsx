@@ -1,30 +1,33 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { listAdminStory } from "../../Redux/Action/StoryAction";
+import { useSelector } from "react-redux";
 
-const ListStoriesScreen = () => {
+const ListStoriesScreen = ({ dispatch }) => {
+    const adminstory = useSelector(state => state.listAdminStory)
+    const { loading, error, story } = adminstory
+    useEffect(() => {
+        dispatch(listAdminStory());
+        console.log('hit')
+    }, [])
 
     const navigate = useNavigate()
     const thlist = [
         'name',
         'category',
         'Created At',
-        'Total Chapter',
-        'Status'
+        'Story ID',
+        'Status',
     ]
 
-    const list = [{
-        name: 'Cup of Tea',
-        createAt: 'Jan 21, 2020',
-        category: 'Romantic',
-        chapterCount: 5,
-        status: 'Active',
-        id:1
-    }]
-
-    const PressHandler = (e,id) =>{
+    const PressHandler = (e, id) => {
         e.preventDefault();
         navigate(`/add/story/${id}`);
     }
+
+    console.log(story)
+
+    if(!story) return null ;
     return (
         <div className="bg-white p-8 rounded-md w-full">
             <div className="flex items-center justify-between pb-6">
@@ -79,35 +82,35 @@ const ListStoriesScreen = () => {
                             </thead>
                             <tbody>
                                 {
-                                    list.map((item, index) => (
-                                        <tr className='bg-slate-50 hover:bg-yellow-200' onClick={e=>PressHandler(e,item.id)}>
-                                          
-                                                <td className="px-5 py-5 border-b border-gray-200 text-sm">
-                                                    <p className="text-gray-900 whitespace-no-wrap">
-                                                        {item.name}
-                                                    </p>
-                                                </td>
-                                                <td className="px-5 py-5 border-b border-gray-200 text-sm">
-                                                    <p className="text-gray-900 whitespace-no-wrap">{item.category}</p>
-                                                </td>
-                                                <td className="px-5 py-5 border-b border-gray-200  text-sm">
-                                                    <p className="text-gray-900 whitespace-no-wrap">
-                                                        {item.createAt}
-                                                    </p>
-                                                </td>
-                                                <td className="px-5 py-5 border-b border-gray-200  text-sm">
-                                                    <p className="text-gray-900 whitespace-no-wrap">{item.chapterCount}</p>
-                                                </td>
-                                                <td className="px-5 py-5 border-b border-gray-200  text-sm">
-                                                    <span className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
-                                                        <span
-                                                            aria-hidden
-                                                            className="absolute inset-0 bg-green-200 opacity-50 rounded-full"
-                                                        ></span>
-                                                        <span className="relative">{item.status}</span>
-                                                    </span>
-                                                </td>
-                                           
+                                    story.map((item, index) => (
+                                        <tr className='bg-slate-50 hover:bg-yellow-200' onClick={e => PressHandler(e, item._id)}>
+
+                                            <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                                                <p className="text-gray-900 whitespace-no-wrap">
+                                                    {item.name}
+                                                </p>
+                                            </td>
+                                            <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                                                <p className="text-gray-900 whitespace-no-wrap">{item.category}</p>
+                                            </td>
+                                            <td className="px-5 py-5 border-b border-gray-200  text-sm">
+                                                <p className="text-gray-900 whitespace-no-wrap">
+                                                    {new Date(item.createdAt).toLocaleDateString()}
+                                                </p>
+                                            </td>
+                                            <td className="px-5 py-5 border-b border-gray-200  text-sm">
+                                                <p className="text-gray-900 whitespace-no-wrap">{item._id}</p>
+                                            </td>
+                                            <td className="px-5 py-5 border-b border-gray-200  text-sm">
+                                                <span className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
+                                                    <span
+                                                        aria-hidden
+                                                        className="absolute inset-0 bg-green-200 opacity-50 rounded-full"
+                                                    ></span>
+                                                    <span className="relative">{item.status || 'Active'}</span>
+                                                </span>
+                                            </td>
+
                                         </tr>
                                     ))
                                 }

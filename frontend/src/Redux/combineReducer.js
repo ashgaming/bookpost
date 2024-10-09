@@ -9,10 +9,14 @@ import {
     createStoryReducer,
     listStoryReducer,
     readStoryDetailsReducer,
+    readChapterReducer,
 
     createChapterReducer,
     listChapterReducer,
-    readChapterReducer
+    listAdminStoryReducer,
+    listAdminChapterReducer,
+    updateChapterReducer,
+
 
 } from './Reducer/StoryReducer'
 
@@ -28,4 +32,9 @@ export const combineReducer = combineReducers( {
     createChapter : createChapterReducer,
     listChapter : listChapterReducer,
     readChapter : readChapterReducer,
+
+    listAdminStory : listAdminStoryReducer,
+    listAdminChapter : listAdminChapterReducer,
+
+    updateChapter:updateChapterReducer,
 })

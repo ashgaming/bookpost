@@ -41,11 +41,13 @@ export default function DisplayBook() {
             {/* List of Chapters */}
             {!loading && <MemoizedListChapter />}
 
-            {/* Comment Section */}
+            {/* Comment Section 
             <MemoizedAddComment />
+            */}
 
-            {/* All Comments Section */}
+            {/* All Comments Section 
             <MemoizedListComment />
+            */}
           </div>
         </div>
 

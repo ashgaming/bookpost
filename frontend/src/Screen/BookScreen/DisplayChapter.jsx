@@ -4,8 +4,6 @@ import { useParams, Link } from 'react-router-dom';
 export default function DisplayChapterk() {
   const { id } = useParams();
 
-  
-
   return (
     <div className="mt-6 bg-gray-50">
       <div className="px-10 py-6 mx-auto">

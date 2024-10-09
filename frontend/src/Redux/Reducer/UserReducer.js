@@ -10,12 +10,13 @@ import {
     USER_DETAILS_REQUEST,
     USER_DETAILS_SUCCESS,
     USER_DETAILS_ERROR,
-    USER_DETAILS_RESET
+    USER_DETAILS_RESET,
+    USER_LOGOUT
 } from '../Constant/UserConstant'
 
-export const userLoginReducer = ( state = {
+export const userLoginReducer = (state = {
     loading: false,
-},action ) => {
+}, action) => {
     switch (action.type) {
         case USER_LOGIN_REQUEST:
             return {
@@ -30,7 +31,7 @@ export const userLoginReducer = ( state = {
                 ...state,
                 loading: false,
                 error: false,
-                userInfo: action.payload,
+                token: action.payload.token,
             }
             break;
 
@@ -42,15 +43,21 @@ export const userLoginReducer = ( state = {
             }
             break;
 
+        case USER_LOGOUT:
+            return {
+                loading: false,
+            }
+            break;
+
         default:
-            return {}
+            return { ...state }
             break;
     }
 }
 
-export const userRegisterReducer = (  state = {
+export const userRegisterReducer = (state = {
     loading: false,
-} ,action) => {
+}, action) => {
     switch (action.type) {
         case USER_REGISTER_REQUEST:
             return {
@@ -78,14 +85,14 @@ export const userRegisterReducer = (  state = {
             break;
 
         default:
-            return {}
+            return { ...state }
             break;
     }
 }
 
-export const userDetailsReducer = (  state = {
+export const userDetailsReducer = (state = {
     loading: false,
-} ,action) => {
+}, action) => {
     switch (action.type) {
         case USER_DETAILS_REQUEST:
             return {
@@ -93,31 +100,32 @@ export const userDetailsReducer = (  state = {
                 loading: true,
                 error: false,
             }
-            break;
+
 
         case USER_DETAILS_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 error: false,
-                userInfo: action.payload.data,
+                userInfo: action.payload,
             }
-            break;
+
 
         case USER_DETAILS_ERROR:
             return {
                 ...state,
-                loading: true,
-                error: action.payload.error,
+                loading: false,
+                error: action.payload,
             }
-            break;
+
 
         case USER_DETAILS_RESET:
-            return {}
-            break;
+            return {
+                loading: false,
+            }
+
 
         default:
-            return {}
-            break;
+            return { ...state }
     }
 }

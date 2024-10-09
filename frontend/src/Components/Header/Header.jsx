@@ -1,19 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { logoutUser } from '../../Redux/Action/UserAcrion';
+import { logoutUser, verifyUser } from '../../Redux/Action/UserAcrion';
 
 export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
     const dispatch = useDispatch();
     const userLogin = useSelector(state=>state.userLogin)
-    const { userInfo } = userLogin
+    const { token } = userLogin
+
+    const userDetails = useSelector(state=>state.userDetails)
+    const { loading ,error , userInfo } = userDetails
+    
     const navigation = [
         { name: 'Home', path: '/' },
         { name: 'About', path: '/about' },
-        { name: 'Story', path: '/story-option' },
         !userInfo && { name: 'Login', path: '/Login' }, 
-    ];
+        userInfo?.isAdmin ? { name: 'Story', path: '/story-option' } : null,
+    ].filter(Boolean);
+
+    useEffect(()=>{
+        if(token){
+            dispatch(verifyUser(token));
+        }
+    },[token])
 
     const logoutHandler = () => {
         dispatch(logoutUser()); 
@@ -50,6 +60,9 @@ export default function Header() {
                             {nav.name}
                         </Link>
                     ))}
+
+                    { loading && <h1>Looding</h1>}
+                    { error && <h5>error</h5>}
 
                     {
                         userInfo && <button

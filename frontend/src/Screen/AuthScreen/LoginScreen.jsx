@@ -11,7 +11,7 @@ const LoginScreen = ({dispatch}) => {
     const navigate = useNavigate();
 
     const userLogin = useSelector(state=>state.userLogin)
-    const { loading,error,userInfo } = userLogin
+    const { loading,error,token } = userLogin
 
     const SubmitHandler = (e) =>{
         e.preventDefault();
@@ -22,12 +22,12 @@ const LoginScreen = ({dispatch}) => {
     }
 
     useEffect(()=>{
-        if(userInfo?.token){
+        if(token){
             navigate('/');
         }else{
             return;
         }
-    },[userInfo])
+    },[token])
 
     return (
         <>
