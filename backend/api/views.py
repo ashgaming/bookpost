@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view , permission_classes
 from rest_framework_simplejwt.views import TokenObtainPairView
-from api.serializer import MyTokenObtainPairSerializer , UserSerializersWithToken , StorySerializer , StoryListSerializer ,ChapterListSerializer , ChapterSerializer
+from api.serializer import MyTokenObtainPairSerializer , UserSerializersWithToken , StorySerializer , StoryListSerializer ,ChapterListSerializer , ChapterSerializer ,StoryListAdminSerializer ,ChapterListAdminSerializer
 from django.contrib.auth.hashers import make_password
 from rest_framework import status
 from django.contrib.auth.models import User
@@ -12,6 +12,9 @@ import os
 from django.conf import settings
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
+from django.core.cache import cache
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
@@ -32,6 +35,26 @@ def registerUser(request):
     except:
         message = {'details':'User with this email already exists'}
         return Response(message,status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def userDetails(request,token):
+    jwt_authenticator = JWTAuthentication()
+    try:
+        # Extract the token and get the validated user
+        validated_token = jwt_authenticator.get_validated_token(token)
+        user = jwt_authenticator.get_user(validated_token)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_401_UNAUTHORIZED)
+
+    # Return the user details from the database
+    user_details = {
+        '_id': user.id,  # The user's ID in the database
+        'username': user.username,
+        'isAdmin': user.is_staff,  # If the user is staff (admin)
+    }
+    
+    return Response(user_details, status=status.HTTP_200_OK)
+    
 
 #done
 @api_view(['GET'])
@@ -122,7 +145,7 @@ def createStory(request):
             cover = data['image'],
         )
         serializer = StorySerializer(story,many=False)
-        return Response(serializer.data)
+        return Response(serializer.data,status=status.HTTP_201_CREATED)
     except:
         message = {'details':'Story with this name already exists'}
         return Response(message,status=status.HTTP_400_BAD_REQUEST)
@@ -130,6 +153,7 @@ def createStory(request):
 @api_view(['POST'])
 def createChapter(request,storyid):
     data = request.data
+    print(data)
     try:
         user = User.objects.get(id=1)
         story = Story.objects.get(_id=storyid)
@@ -140,7 +164,7 @@ def createChapter(request,storyid):
             title=data['title'],
             summary=data['summary'],
             chapter=data['chapter'],
-            cover=data['image'],
+            cover=data['cover'],
             createdAt=datetime.now()
         )
         serializer = ChapterSerializer(chap,many=False)
@@ -149,6 +173,48 @@ def createChapter(request,storyid):
         message = {'message':'Faild to create chapter'}
         return Response(message,status=status.HTTP_400_BAD_REQUEST)
     
+@api_view(['PUT'])  # Using 'PUT' to update an existing chapter
+def updateChapter(request, storyid, chapterid):
+    data = request.data
+    print(data)
+    try:
+        # Fetch the user (you might want to replace this with the authenticated user)
+        user = User.objects.get(id=1)
+        
+        # Fetch the specific story by storyid
+        story = Story.objects.get(_id=storyid)
+        
+        # Fetch the chapter to update by chapterid
+        chap = Chapter.objects.get(_id=chapterid, story=story)
+        
+        # Update chapter fields
+        chap.title = data.get('title', chap.title)  # Retain the original if no new value provided
+        chap.summary = data.get('summary', chap.summary)
+        chap.chapter = data.get('chapter', chap.chapter)
+        if(data['cover']!=''):
+            chap.cover = data.get('cover', chap.cover)
+        chap.updatedAt = datetime.now()  # Add a field to track update time (optional)
+        
+        # Save the updated chapter
+        chap.save()
+
+        # Serialize the updated chapter data and return response
+        serializer = ChapterSerializer(chap, many=False)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    except Chapter.DoesNotExist:
+        message = {'message': 'Chapter not found'}
+        return Response(message, status=status.HTTP_404_NOT_FOUND)
+    
+    except Story.DoesNotExist:
+        message = {'message': 'Story not found'}
+        return Response(message, status=status.HTTP_404_NOT_FOUND)
+
+    except Exception as e:
+        message = {'message': f'Failed to update chapter: {str(e)}'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+
 #done
 @api_view(['POST'])
 def uploadImage(request):
@@ -166,3 +232,47 @@ def uploadImage(request):
     image_url = os.path.join(settings.MEDIA_URL, path)
 
     return Response({"image_url": image_url})
+
+
+@api_view(['GET'])
+def listAdminStory(request):
+    try:
+        story = Story.objects.all()
+        serializer = StoryListAdminSerializer(story,many=True)
+        return Response(serializer.data)
+    except:
+        message = {'details':'User with this email already exists'}
+        return Response(message,status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def listAdminChapter(request, storyid):
+    print(storyid)
+    try:
+        # Try to get serialized chapters from cache
+        if storyid==100: # cache.get('listAdminChapter'):
+            chapters = cache.get('listAdminChapter')
+            print('db: ', 'cache')
+        else:
+            # Fetch all chapters associated with the story ID
+            chapters = Chapter.objects.filter(story=storyid)
+            
+            if chapters.exists():  # Check if chapters are found
+                # Serialize the chapters and cache the serialized data
+                chapters = ChapterListAdminSerializer(chapters, many=True).data
+               # cache.set('listAdminChapter', chapters, timeout=25)
+                print('db: ', 'pg')
+            else:
+                message = {'message': 'No chapters available for this story'}
+                return Response(message, status=status.HTTP_204_NO_CONTENT)
+        
+        # Return the cached or newly fetched serialized chapters
+        return Response(chapters, status=status.HTTP_200_OK)
+    
+    except Chapter.DoesNotExist:
+        message = {'details': 'Story not found or invalid story ID'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        # General error handling
+        print(e)
+        return Response({'details': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

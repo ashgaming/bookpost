@@ -85,3 +85,13 @@ class ChapterSerializer(serializers.ModelSerializer):
      class Meta:
         model = Chapter
         fields = '__all__'
+
+class StoryListAdminSerializer(serializers.ModelSerializer):
+     class Meta:
+        model = Story
+        fields = ['_id','name','category','createdAt']
+
+class ChapterListAdminSerializer(serializers.ModelSerializer):
+     class Meta:
+        model = Chapter
+        fields = ['_id','title','createdAt','views','likes']
