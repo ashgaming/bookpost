@@ -23,7 +23,7 @@ export default function Header() {
         if(token){
             dispatch(verifyUser(token));
         }
-    },[token])
+    },[token,dispatch])
 
     const logoutHandler = () => {
         dispatch(logoutUser()); 

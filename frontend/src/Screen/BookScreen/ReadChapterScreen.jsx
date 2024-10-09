@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import AddComment from '../../Components/Layout/AddComment';
+//import AddComment from '../../Components/Layout/AddComment';
 import Stars from '../../Components/Element/Stars';
 import { readChapter } from '../../Redux/Action/StoryAction';
 import { useSelector } from 'react-redux';
@@ -9,30 +9,26 @@ import Message from '../../Components/Message/Message';
 
 export default function ReadChapterScreen({ dispatch }) {
   const { chapterid, storyid } = useParams();
-  const [title, setTitle] = useState('');
-  const [story, setStory] = useState('');
 
   const ReadChapter = useSelector(state => state.readChapter)
   const { loading,error,chapter,count } = ReadChapter
 
-  const LikeThisChapter = () => {
+  /*const LikeThisChapter = () => {
     chapter.likes += 1;
-    console.log(chapter.likes)
   }
-
+*/
   useEffect(() => {
     try {
       dispatch(readChapter(storyid, chapterid))
     } catch (err) {
       alert(err)
     }
-  },[chapterid])
+  },[chapterid,dispatch,storyid])
   
   if(loading) return <Loader/>;
   if(error) return <Message>error</Message>;
   if(!chapter._id) return null;
 
-  console.log(chapter.chapter)
   const paragraphs = chapter.chapter.split(/\n+/).filter(p => p.trim() !== '');
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -47,7 +43,7 @@ export default function ReadChapterScreen({ dispatch }) {
         {/* Chapter Content */}
         <section className="mb-8">
           <div className="flex flex-col md:flex-row items-center mb-6">
-            <img src={`http://127.0.0.1:8000/${chapter.cover.slice(32)}`} alt="Chapter Image" className="w-48 h-48 object-cover rounded-lg shadow-md" />
+            <img src={`http://127.0.0.1:8000/${chapter.cover.slice(32)}`} alt='' className="w-48 h-48 object-cover rounded-lg shadow-md" />
             <div className="mt-4 md:mt-0 md:ml-6">
               <h1 className="text-2xl font-bold text-gray-800">{chapter.title || 'Untitled'}</h1>
               <h2 className="text-lg text-gray-600">{chapter.title}</h2>

@@ -24,7 +24,7 @@ export const userLoginReducer = (state = {
                 loading: true,
                 error: false,
             }
-            break;
+            
 
         case USER_LOGIN_SUCCESS:
             return {
@@ -33,7 +33,7 @@ export const userLoginReducer = (state = {
                 error: false,
                 token: action.payload.token,
             }
-            break;
+            
 
         case USER_LOGIN_ERROR:
             return {
@@ -41,17 +41,17 @@ export const userLoginReducer = (state = {
                 loading: false,
                 error: action.payload,
             }
-            break;
+            
 
         case USER_LOGOUT:
             return {
                 loading: false,
             }
-            break;
+            
 
         default:
             return { ...state }
-            break;
+            
     }
 }
 
@@ -65,7 +65,7 @@ export const userRegisterReducer = (state = {
                 loading: true,
                 error: false,
             }
-            break;
+            
 
         case USER_REGISTER_SUCCESS:
             return {
@@ -74,7 +74,7 @@ export const userRegisterReducer = (state = {
                 error: false,
                 userInfo: action.payload.data,
             }
-            break;
+            
 
         case USER_REGISTER_ERROR:
             return {
@@ -82,11 +82,11 @@ export const userRegisterReducer = (state = {
                 loading: true,
                 error: action.payload.error,
             }
-            break;
+            
 
         default:
             return { ...state }
-            break;
+            
     }
 }
 

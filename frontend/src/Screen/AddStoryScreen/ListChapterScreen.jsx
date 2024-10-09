@@ -8,12 +8,13 @@ const ListChapterScreen = ({dispatch}) => {
     const navigate = useNavigate()
 
     const chapterList = useSelector(state=>state.listAdminChapter)
-    const {loading,error,chapters} = chapterList
+    const {//loading,error,
+        chapters} = chapterList
 
     console.log(chapters)
     useEffect(()=>{
         dispatch(listAdminChapter(storyid))
-    },[])
+    },[dispatch,storyid])
 
     const thlist = [
         'Id',

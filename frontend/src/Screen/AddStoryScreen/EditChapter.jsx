@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { UploadImage } from '../../Helper/StoryHelp';
-import { createChapter, readChapter, updateChapter } from '../../Redux/Action/StoryAction';
+import { readChapter, updateChapter } from '../../Redux/Action/StoryAction';
 import Loader from '../../Components/Message/Loader';
 import Message from '../../Components/Message/Message';
 import { CorrectUrl } from '../../Helper/ImageUrlCorrect';
@@ -19,7 +19,9 @@ const EditChapter = ({ dispatch }) => {
     const { loading, error, chapter } = editChapterState;
 
     const updateChapterState = useSelector(state => state.updateChapter);
-    const { loading: updateLoading, error: updateError, success } = updateChapterState;
+    const { loading: updateLoading, 
+       // error: updateError,
+        success } = updateChapterState;
 
     // Form fields refs
     const titleRef = useRef(null);

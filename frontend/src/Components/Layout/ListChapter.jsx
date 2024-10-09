@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { listChapter } from '../../Redux/Action/StoryAction';
 import { useDispatch, useSelector } from 'react-redux';
-import { CorrectUrl } from '../../Helper/ImageUrlCorrect';
+//import { CorrectUrl } from '../../Helper/ImageUrlCorrect';
 
 const ListChapter = () => {
     const { id } = useParams();
     const dispatch = useDispatch();
 
     const ListChapterState = useSelector(state => state.listChapter);
-    const { loading, error, chapters } = ListChapterState;
+    const {
+        // loading, error,
+         chapters } = ListChapterState;
 
     // State to hold resolved image URLs
-    const [imageUrls, setImageUrls] = useState({});
 
     useEffect(() => {
         // Fetch the chapters when the id changes
@@ -22,9 +23,9 @@ const ListChapter = () => {
 
     console.log(typeof chapters)
 
-    useEffect(() => {
+   // useEffect(() => {
         // Function to resolve chapter cover URLs
-        const fetchUrls = async () => {
+     /*   const fetchUrls = async () => {
             const urls = {};
             const chapterArray = Object.values(chapters); // Convert chapters object to an array
             for (const chapter of chapterArray) {
@@ -40,12 +41,11 @@ const ListChapter = () => {
                     urls[chapter.ChapterId] = '/path/to/placeholder-image.jpg'; // Fallback image
                 }
             }
-            setImageUrls(urls);
-        };
+   //     };
 
         if (chapters && typeof chapters === 'object') {
         }
-    }, [chapters,id]);
+    }, [chapters,id]);*/
 
     if (!chapters || typeof chapters !== 'object') return null;
     console.log(chapters)

@@ -5,11 +5,13 @@ import { useSelector } from "react-redux";
 
 const ListStoriesScreen = ({ dispatch }) => {
     const adminstory = useSelector(state => state.listAdminStory)
-    const { loading, error, story } = adminstory
+    const {
+        // loading, error, 
+        story } = adminstory
     useEffect(() => {
         dispatch(listAdminStory());
         console.log('hit')
-    }, [])
+    }, [dispatch])
 
     const navigate = useNavigate()
     const thlist = [

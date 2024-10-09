@@ -49,7 +49,7 @@ export const loginUser = (email, password) => async (dispatch) => {
 
 export const registerUser = (email, password) => async (dispatch) => {
     try {
-        dispatch({ type: USER_LOGIN_REQUEST })
+        dispatch({ type: USER_REGISTER_REQUEST })
 
         const fdata = {
             "username": email,
@@ -58,7 +58,7 @@ export const registerUser = (email, password) => async (dispatch) => {
         }
         const { data } = await axios.post(`http://127.0.0.1:8000/api/login/`, fdata, config)
         dispatch({
-            type: USER_LOGIN_SUCCESS,
+            type: USER_REGISTER_SUCCESS,
             payload: data
         })
 
@@ -67,7 +67,7 @@ export const registerUser = (email, password) => async (dispatch) => {
     }
     catch (err) {
         dispatch({
-            type: USER_LOGIN_ERROR,
+            type: USER_REGISTER_ERROR,
             payload: err
         })
     }
@@ -77,9 +77,9 @@ export const verifyUser = (toke) => async (dispatch,getState) => {
     try {
         dispatch({ type: USER_DETAILS_REQUEST })
 
-        const {
-            userLogin: { token },
-            } = getState()
+    //    const {
+    //        userLogin: { token },
+     //       } = getState()
 
         const { data } = await axios.get(`http://127.0.0.1:8000/api/user/details/${toke}`, config)
         dispatch({

@@ -50,7 +50,6 @@ export const createStoryReducer = (state = {
                 loading: true,
                 error: false,
             }
-            break;
 
         case CREATE_STORY_SUCCESS:
             return {
@@ -59,7 +58,7 @@ export const createStoryReducer = (state = {
                 error: false,
                 success: true,
             }
-            break;
+            
 
         case CREATE_STORY_ERROR:
             return {
@@ -67,11 +66,11 @@ export const createStoryReducer = (state = {
                 loading: true,
                 error: action.payload,
             }
-            break;
+            
 
         default:
             return {}
-            break;
+            
     }
 }
 
@@ -85,7 +84,7 @@ export const listStoryReducer = (state = {
                 loading: true,
                 error: false,
             }
-            break;
+            
 
         case LIST_STORY_SUCCESS:
             return {
@@ -94,7 +93,7 @@ export const listStoryReducer = (state = {
                 error: false,
                 Books: action.payload,
             }
-            break;
+            
 
         case LIST_STORY_ERROR:
             return {
@@ -102,11 +101,11 @@ export const listStoryReducer = (state = {
                 loading: true,
                 error: action.payload.error,
             }
-            break;
+            
 
         default:
             return {}
-            break;
+            
     }
 }
 
@@ -155,7 +154,7 @@ export const createChapterReducer = (state = {
                 loading: true,
                 error: false,
             }
-            break;
+            
 
         case CREATE_CHAPTER_SUCCESS:
             return {
@@ -165,7 +164,7 @@ export const createChapterReducer = (state = {
                 chapter: action.payload,
                 success:true,
             }
-            break;
+            
 
         case CREATE_CHAPTER_ERROR:
             return {
@@ -173,7 +172,7 @@ export const createChapterReducer = (state = {
                 loading: true,
                 error: action.payload.error,
             }
-            break;
+            
 
         case CREATE_CHAPTER_RESET:
             return {
@@ -186,7 +185,7 @@ export const createChapterReducer = (state = {
 
         default:
             return {...state}
-            break;
+            
     }
 }
 
@@ -200,7 +199,7 @@ export const updateChapterReducer = (state = {
                 loading: true,
                 error: false,
             }
-            break;
+            
 
         case UPDATE_CHAPTER_SUCCESS:
             return {
@@ -210,7 +209,7 @@ export const updateChapterReducer = (state = {
                 chapter: action.payload,
                 success:true,
             }
-            break;
+            
 
         case UPDATE_CHAPTER_ERROR:
             return {
@@ -218,7 +217,7 @@ export const updateChapterReducer = (state = {
                 loading: true,
                 error: action.payload.error,
             }
-            break;
+            
 
         case UPDATE_CHAPTER_RESET:
             return {
@@ -249,7 +248,7 @@ export const readChapterReducer = (state = {
                 loading: true,
                 error: false,
             }
-            break;
+            
 
         case READ_CHAPTER_SUCCESS:
             return {
@@ -303,7 +302,7 @@ export const listChapterReducer = (state = {
 
         default:
             return {}
-            break;
+            
     }
 }
 
@@ -389,7 +388,7 @@ export const readAdminChapterReducer = (state = {
                 loading: true,
                 error: false,
             }
-            break;
+            
 
         case READ_CHAPTER_SUCCESS:
             return {

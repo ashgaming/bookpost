@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import AddComment from '../../Components/Layout/AddComment';
-import Loader from '../../Components/Message/Loader';
+//import AddComment from '../../Components/Layout/AddComment';
+//import Loader from '../../Components/Message/Loader';
 import ListChapter from '../../Components/Layout/ListChapter';
-import ListComment from '../../Components/Layout/ListComment';
+//import ListComment from '../../Components/Layout/ListComment';
 import BookDetails from '../../Components/Layout/BookDetails';
 import { useDispatch, useSelector } from 'react-redux';
 import { listStoryDetails } from '../../Redux/Action/StoryAction';
@@ -11,8 +11,8 @@ import { listStoryDetails } from '../../Redux/Action/StoryAction';
 // Memoized child components to prevent unnecessary re-renders
 const MemoizedBookDetails = React.memo(BookDetails);
 const MemoizedListChapter = React.memo(ListChapter);
-const MemoizedAddComment = React.memo(AddComment);
-const MemoizedListComment = React.memo(ListComment);
+// const MemoizedAddComment = React.memo(AddComment);
+// const MemoizedListComment = React.memo(ListComment);
 
 export default function DisplayBook() {
   const { id } = useParams();  // Get the story ID from the route params
