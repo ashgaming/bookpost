@@ -27,7 +27,7 @@ DEBUG = env.bool('DEBUG',default=False)
 
 ALLOWED_HOSTS = ['http://localhost:3000',
                  'https://bookpost-frontend.onrender.com',
-                 'https://bookpost.onrender.com'
+                 'https://bookpost.onrender.com',
                  '127.0.0.1',
                  'bookpost.onrender.com',
                  os.environ.get('REDIS'),
@@ -95,6 +95,7 @@ SIMPLE_JWT = {
 }
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     "corsheaders.middleware.CorsMiddleware",
@@ -214,6 +215,8 @@ STATICFILES_DIRS = [
    # BASE_DIR / 'frontend/build/static'
 ]
 
+#STATIC_ROOT = BASE_DIR / 'static'
+
 MEDIA_ROOT = 'static/images'
 
 # Default primary key field type
@@ -222,3 +225,6 @@ MEDIA_ROOT = 'static/images'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 APPEND_SLASH = False
+
+#STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')

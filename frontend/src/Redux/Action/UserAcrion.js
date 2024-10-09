@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { backend } from '../../Connection/conn'
 import {
     USER_LOGIN_REQUEST,
     USER_LOGIN_SUCCESS,
@@ -30,7 +31,7 @@ export const loginUser = (email, password) => async (dispatch) => {
             "password": password,
 
         }
-        const { data } = await axios.post(`http://127.0.0.1:8000/api/login/`, fdata, config)
+        const { data } = await axios.post(`${backend}/api/login/`, fdata, config)
         dispatch({
             type: USER_LOGIN_SUCCESS,
             payload: data
@@ -56,7 +57,7 @@ export const registerUser = (email, password) => async (dispatch) => {
             "password": password,
 
         }
-        const { data } = await axios.post(`http://127.0.0.1:8000/api/login/`, fdata, config)
+        const { data } = await axios.post(`${backend}/api/login/`, fdata, config)
         dispatch({
             type: USER_REGISTER_SUCCESS,
             payload: data
@@ -81,7 +82,7 @@ export const verifyUser = (toke) => async (dispatch,getState) => {
     //        userLogin: { token },
      //       } = getState()
 
-        const { data } = await axios.get(`http://127.0.0.1:8000/api/user/details/${toke}`, config)
+        const { data } = await axios.get(`${backend}/api/user/details/${toke}`, config)
         dispatch({
             type: USER_DETAILS_SUCCESS,
             payload: data

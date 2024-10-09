@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { listChapter } from '../../Redux/Action/StoryAction';
 import { useDispatch, useSelector } from 'react-redux';
 //import { CorrectUrl } from '../../Helper/ImageUrlCorrect';
+import { backend } from '../../Connection/conn';
 
 const ListChapter = () => {
     const { id } = useParams();
@@ -63,7 +64,7 @@ const ListChapter = () => {
                         <Link to={`/story/${id}/chapter/${chapter._id}`} className="block w-full">
                             <img
                                 className="object-cover w-full h-48 rounded-t-xl transition duration-300 transform hover:scale-105"
-                                src={ `http://127.0.0.1:8000/${chapter.cover.slice(32)}` } // Use resolved URL or fallback
+                                src={ `${backend}/${chapter.cover.slice(32)}` } // Use resolved URL or fallback
                                 alt={`Chapter cover for ${chapter.title}`}
                             />
 

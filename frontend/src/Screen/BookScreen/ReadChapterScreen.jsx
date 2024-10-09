@@ -6,6 +6,7 @@ import { readChapter } from '../../Redux/Action/StoryAction';
 import { useSelector } from 'react-redux';
 import Loader from '../../Components/Message/Loader';
 import Message from '../../Components/Message/Message';
+import { backend } from '../../Connection/conn';
 
 export default function ReadChapterScreen({ dispatch }) {
   const { chapterid, storyid } = useParams();
@@ -43,7 +44,7 @@ export default function ReadChapterScreen({ dispatch }) {
         {/* Chapter Content */}
         <section className="mb-8">
           <div className="flex flex-col md:flex-row items-center mb-6">
-            <img src={`http://127.0.0.1:8000/${chapter.cover.slice(32)}`} alt='' className="w-48 h-48 object-cover rounded-lg shadow-md" />
+            <img src={`${backend}/${chapter.cover.slice(32)}`} alt='' className="w-48 h-48 object-cover rounded-lg shadow-md" />
             <div className="mt-4 md:mt-0 md:ml-6">
               <h1 className="text-2xl font-bold text-gray-800">{chapter.title || 'Untitled'}</h1>
               <h2 className="text-lg text-gray-600">{chapter.title}</h2>

@@ -1,1 +1,1 @@
-export const backend = 'https://bookpost-frontend.onrender.com';
+export const backend = 'https://bookpost.onrender.com';

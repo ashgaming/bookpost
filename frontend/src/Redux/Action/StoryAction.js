@@ -37,6 +37,7 @@ import {
     LIST_ADMIN_CHAPTER_ERROR,
 
 } from '../Constant/StoryConstant'
+import { backend } from '../../Connection/conn'
 
 const config = {
     headers: {
@@ -48,7 +49,7 @@ export const createStory = (fdata) => async (dispatch) => {
     try {
         dispatch({ type: CREATE_STORY_REQUEST })
 
-        const { data } = await axios.post(`http://127.0.0.1:8000/api/story/create/`, fdata, config)
+        const { data } = await axios.post(`${backend}/api/story/create/`, fdata, config)
 
         dispatch({
             type: CREATE_STORY_SUCCESS,
@@ -68,7 +69,7 @@ export const listStory = () => async (dispatch) => {
     try {
         dispatch({ type: LIST_STORY_REQUEST })
 
-        const { data } = await axios.get(`http://127.0.0.1:8000/api/story/list`, config)
+        const { data } = await axios.get(`${backend}/api/story/list`, config)
         dispatch({
             type: LIST_STORY_SUCCESS,
             payload: data
@@ -87,7 +88,7 @@ export const listStoryDetails = (storyid) => async (dispatch) => {
     try {
         dispatch({ type: READ_STORY_DETAILS_REQUEST })
 
-        const { data } = await axios.get(`http://127.0.0.1:8000/api/story/${storyid}`, config)
+        const { data } = await axios.get(`${backend}/api/story/${storyid}`, config)
         dispatch({
             type: READ_STORY_DETAILS_SUCCESS,
             payload: data
@@ -106,7 +107,7 @@ export const createChapter = (storyid,fdata) => async (dispatch) => {
     try {
         dispatch({ type: CREATE_CHAPTER_REQUEST })
 
-        const { data } = await axios.post(`http://127.0.0.1:8000/api/story/${storyid}/chapter/create/`, fdata, config)
+        const { data } = await axios.post(`${backend}/api/story/${storyid}/chapter/create/`, fdata, config)
         dispatch({
             type: CREATE_CHAPTER_SUCCESS,
             payload: data
@@ -125,7 +126,7 @@ export const listChapter = (storyid) => async (dispatch) => {
     try {
         dispatch({ type: LIST_CHAPTER_REQUEST })
 
-        const { data } = await axios.get(`http://127.0.0.1:8000/api/story/${storyid}/chapter/list`,  config)
+        const { data } = await axios.get(`${backend}/api/story/${storyid}/chapter/list`,  config)
         dispatch({
             type: LIST_CHAPTER_SUCCESS,
             payload: data
@@ -144,7 +145,7 @@ export const readChapter = (storyid,chapterid) => async (dispatch) => {
     try {
         dispatch({ type: READ_CHAPTER_REQUEST })
 
-        const { data } = await axios.get(`http://127.0.0.1:8000/api/story/${storyid}/chapter/${chapterid}`, config)
+        const { data } = await axios.get(`${backend}/api/story/${storyid}/chapter/${chapterid}`, config)
         dispatch({
             type: READ_CHAPTER_SUCCESS,
             payload: data
@@ -163,7 +164,7 @@ export const listAdminStory = () => async (dispatch) => {
     try {
         dispatch({ type: LIST_ADMIN_STORY_REQUEST })
 
-        const { data } = await axios.get(`http://127.0.0.1:8000/api/admin/story/list`, config)
+        const { data } = await axios.get(`${backend}/api/admin/story/list`, config)
         dispatch({
             type: LIST_ADMIN_STORY_SUCCESS,
             payload: data
@@ -182,7 +183,7 @@ export const listAdminChapter = (id) => async (dispatch) => {
     try {
         dispatch({ type: LIST_ADMIN_CHAPTER_REQUEST })
 
-        const { data } = await axios.get(`http://127.0.0.1:8000/api/admin/story/${id}/chapter/list`, config)
+        const { data } = await axios.get(`${backend}/api/admin/story/${id}/chapter/list`, config)
         dispatch({
             type: LIST_ADMIN_CHAPTER_SUCCESS,
             payload: data
@@ -202,7 +203,7 @@ export const updateChapter = (storyid,chapterid,fdata) => async (dispatch) => {
         console.log(fdata)
         dispatch({ type: UPDATE_CHAPTER_REQUEST })
 
-        const { data } = await axios.put(`http://127.0.0.1:8000/api/story/${storyid}/chapter/${chapterid}/update`, fdata, config)
+        const { data } = await axios.put(`${backend}/api/story/${storyid}/chapter/${chapterid}/update`, fdata, config)
         dispatch({
             type: UPDATE_CHAPTER_SUCCESS,
             payload: data

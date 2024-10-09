@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-
+import { backend } from '../../Connection/conn'
 export const BookCover = ({ Book }) => {
   const url = Book.cover.slice(32)
   return (
@@ -9,7 +9,7 @@ export const BookCover = ({ Book }) => {
     className="max-w-sm mx-auto relative shadow-md rounded-lg cursor-pointer"
     >
       <img
-       src={'http://127.0.0.1:8000'+ url} 
+       src={'${backend}'+ url} 
        alt={Book.name}
        className="w-full h-auto object-cover rounded-lg" />
       <div className="absolute bottom-0 left-0 right-0 h-40 bg-black bg-opacity-50 backdrop-blur text-white p-4 rounded-b-lg">
