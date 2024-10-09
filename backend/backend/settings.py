@@ -26,9 +26,10 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = env.bool('DEBUG',default=False)
 
 ALLOWED_HOSTS = ['http://localhost:3000',
-                 'https://bookpost-frontend.onrender.com/',
+                 'https://bookpost-frontend.onrender.com',
+                 'https://bookpost.onrender.com'
                  '127.0.0.1',
-                 os.environ.get('REDIS')
+                 os.environ.get('REDIS'),
                  ]
 
 
@@ -115,6 +116,8 @@ CORS_ALLOW_METHODS = [
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',  # Your React app domain
     'http://127.0.0.1:3000',  # If using localhost IP
+    'https://bookpost-frontend.onrender.com',
+
     # Add other domains if needed
 ]
 
@@ -142,20 +145,19 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-        
-
-        # postgresql://postbookdb_user:LetOnnzcU0hrhtPWjFq2DKKqiz3WNFr3@dpg-cs18bulds78s73b489d0-a.singapore-postgres.render.com/postbookdb
-    }
-}
-
 #DATABASES = {
-#    'default': dj_database_url.parse(os.environ.get('PSQ_DB'))
-#         
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': BASE_DIR / 'db.sqlite3',
+#        
+#
+#    }
 #}
+
+DATABASES = {
+    'default': dj_database_url.parse(os.environ.get('PSQ_DB'))
+         
+}
 
 
 # Password validation
