@@ -29,6 +29,7 @@ ALLOWED_HOSTS = ['http://localhost:3000',
                  'https://bookpost-frontend.onrender.com',
                  'https://bookpost.onrender.com'
                  '127.0.0.1',
+                 'bookpost.onrender.com',
                  os.environ.get('REDIS'),
                  ]
 
@@ -117,6 +118,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',  # Your React app domain
     'http://127.0.0.1:3000',  # If using localhost IP
     'https://bookpost-frontend.onrender.com',
+    'https://bookpost.onrender.com',
 
     # Add other domains if needed
 ]
