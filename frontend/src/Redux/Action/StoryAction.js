@@ -24,7 +24,17 @@ import {
     LIST_CHAPTER_SUCCESS,
     LIST_CHAPTER_ERROR,
 
+    UPDATE_CHAPTER_REQUEST,
+    UPDATE_CHAPTER_SUCCESS,
+    UPDATE_CHAPTER_ERROR,
 
+    LIST_ADMIN_STORY_REQUEST,
+    LIST_ADMIN_STORY_SUCCESS,
+    LIST_ADMIN_STORY_ERROR,
+
+    LIST_ADMIN_CHAPTER_REQUEST,
+    LIST_ADMIN_CHAPTER_SUCCESS,
+    LIST_ADMIN_CHAPTER_ERROR,
 
 } from '../Constant/StoryConstant'
 
@@ -35,12 +45,10 @@ const config = {
 }
 
 export const createStory = (fdata) => async (dispatch) => {
-
-    console.log('fdata',fdata)
     try {
         dispatch({ type: CREATE_STORY_REQUEST })
 
-        const { data } = await axios.post(`http://127.0.0.1:8000/api/story/create`, fdata, config)
+        const { data } = await axios.post(`http://127.0.0.1:8000/api/story/create/`, fdata, config)
 
         dispatch({
             type: CREATE_STORY_SUCCESS,
@@ -146,6 +154,64 @@ export const readChapter = (storyid,chapterid) => async (dispatch) => {
     catch (err) {
         dispatch({
             type:  READ_CHAPTER_ERROR,
+            payload: err
+        })
+    }
+}
+
+export const listAdminStory = () => async (dispatch) => {
+    try {
+        dispatch({ type: LIST_ADMIN_STORY_REQUEST })
+
+        const { data } = await axios.get(`http://127.0.0.1:8000/api/admin/story/list`, config)
+        dispatch({
+            type: LIST_ADMIN_STORY_SUCCESS,
+            payload: data
+        })
+
+    }
+    catch (err) {
+        dispatch({
+            type: LIST_ADMIN_STORY_ERROR,
+            payload: err
+        })
+    }
+}
+
+export const listAdminChapter = (id) => async (dispatch) => {
+    try {
+        dispatch({ type: LIST_ADMIN_CHAPTER_REQUEST })
+
+        const { data } = await axios.get(`http://127.0.0.1:8000/api/admin/story/${id}/chapter/list`, config)
+        dispatch({
+            type: LIST_ADMIN_CHAPTER_SUCCESS,
+            payload: data
+        })
+
+    }
+    catch (err) {
+        dispatch({
+            type: LIST_ADMIN_CHAPTER_ERROR,
+            payload: err
+        })
+    }
+}
+
+export const updateChapter = (storyid,chapterid,fdata) => async (dispatch) => {
+    try {
+        console.log(fdata)
+        dispatch({ type: UPDATE_CHAPTER_REQUEST })
+
+        const { data } = await axios.put(`http://127.0.0.1:8000/api/story/${storyid}/chapter/${chapterid}/update`, fdata, config)
+        dispatch({
+            type: UPDATE_CHAPTER_SUCCESS,
+            payload: data
+        })
+
+    }
+    catch (err) {
+        dispatch({
+            type: UPDATE_CHAPTER_ERROR,
             payload: err
         })
     }

@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React from 'react';
+import {
+  // useParams,
+   Link } from 'react-router-dom';
 
-export default function DisplayChapterk() {
-  const { id } = useParams();
-
-  
+export default function DisplayChapter() {
+//  const { id } = useParams();
 
   return (
     <div className="mt-6 bg-gray-50">

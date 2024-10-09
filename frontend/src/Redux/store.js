@@ -5,25 +5,26 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 
 
 
+const userInfoFromStorage = localStorage.getItem('token') ? JSON.parse(localStorage.getItem('token')) : null
 
 
 
 const initialState = {
-    /* cart: {
-         cartItems: cartItemsFromStorage,
-         shippingAddress: shippingAddressFromStorage,
-         paymentMethod: paymentMethodFromStorage,
-     },
-     userLogin: { userInfo: userInfoFromStorage } */
+  
+     userLogin: { token: userInfoFromStorage } 
+ 
 }
 
 
 const middleware = [thunk]
 /*
 const store = createStore(combineReducer, initialState,
-    composeWithDevTools (applyMiddleware(...middleware),
+    composeWithDevTools(applyMiddleware(...middleware),
     ))
-   */
+
+
+*/
+
 
 
 

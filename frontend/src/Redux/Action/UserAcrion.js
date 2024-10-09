@@ -47,6 +47,55 @@ export const loginUser = (email, password) => async (dispatch) => {
     }
 }
 
+export const registerUser = (email, password) => async (dispatch) => {
+    try {
+        dispatch({ type: USER_REGISTER_REQUEST })
+
+        const fdata = {
+            "username": email,
+            "password": password,
+
+        }
+        const { data } = await axios.post(`http://127.0.0.1:8000/api/login/`, fdata, config)
+        dispatch({
+            type: USER_REGISTER_SUCCESS,
+            payload: data
+        })
+
+        localStorage.setItem('token', JSON.stringify(data.token))
+
+    }
+    catch (err) {
+        dispatch({
+            type: USER_REGISTER_ERROR,
+            payload: err
+        })
+    }
+}
+
+export const verifyUser = (toke) => async (dispatch,getState) => {
+    try {
+        dispatch({ type: USER_DETAILS_REQUEST })
+
+    //    const {
+    //        userLogin: { token },
+     //       } = getState()
+
+        const { data } = await axios.get(`http://127.0.0.1:8000/api/user/details/${toke}`, config)
+        dispatch({
+            type: USER_DETAILS_SUCCESS,
+            payload: data
+        })
+
+    }
+    catch (err) {
+        dispatch({
+            type: USER_DETAILS_ERROR,
+            payload: err
+        })
+    }
+}
+
 export const logoutUser =()=> (dispatch) =>{
     localStorage.removeItem('token');
     dispatch({type:USER_LOGOUT})

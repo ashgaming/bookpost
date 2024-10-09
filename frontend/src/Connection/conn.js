@@ -1,0 +1,1 @@
+export const backend = 'https://bookpost-frontend.onrender.com';

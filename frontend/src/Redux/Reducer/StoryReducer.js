@@ -15,6 +15,11 @@ import {
     LIST_CHAPTER_SUCCESS,
     LIST_CHAPTER_ERROR,
 
+    UPDATE_CHAPTER_REQUEST,
+    UPDATE_CHAPTER_SUCCESS,
+    UPDATE_CHAPTER_ERROR,
+    UPDATE_CHAPTER_RESET,
+
     READ_CHAPTER_REQUEST,
     READ_CHAPTER_SUCCESS,
     READ_CHAPTER_ERROR,
@@ -22,6 +27,15 @@ import {
     READ_STORY_DETAILS_REQUEST,
     READ_STORY_DETAILS_SUCCESS,
     READ_STORY_DETAILS_ERROR,
+
+    LIST_ADMIN_STORY_REQUEST,
+    LIST_ADMIN_STORY_SUCCESS,
+    LIST_ADMIN_STORY_ERROR,
+
+    LIST_ADMIN_CHAPTER_REQUEST,
+    LIST_ADMIN_CHAPTER_SUCCESS,
+    LIST_ADMIN_CHAPTER_ERROR,
+    CREATE_CHAPTER_RESET,
 
 
 } from '../Constant/StoryConstant'
@@ -36,7 +50,6 @@ export const createStoryReducer = (state = {
                 loading: true,
                 error: false,
             }
-            break;
 
         case CREATE_STORY_SUCCESS:
             return {
@@ -45,7 +58,7 @@ export const createStoryReducer = (state = {
                 error: false,
                 success: true,
             }
-            break;
+            
 
         case CREATE_STORY_ERROR:
             return {
@@ -53,11 +66,11 @@ export const createStoryReducer = (state = {
                 loading: true,
                 error: action.payload,
             }
-            break;
+            
 
         default:
             return {}
-            break;
+            
     }
 }
 
@@ -71,7 +84,7 @@ export const listStoryReducer = (state = {
                 loading: true,
                 error: false,
             }
-            break;
+            
 
         case LIST_STORY_SUCCESS:
             return {
@@ -80,7 +93,7 @@ export const listStoryReducer = (state = {
                 error: false,
                 Books: action.payload,
             }
-            break;
+            
 
         case LIST_STORY_ERROR:
             return {
@@ -88,11 +101,11 @@ export const listStoryReducer = (state = {
                 loading: true,
                 error: action.payload.error,
             }
-            break;
+            
 
         default:
             return {}
-            break;
+            
     }
 }
 
@@ -141,16 +154,17 @@ export const createChapterReducer = (state = {
                 loading: true,
                 error: false,
             }
-            break;
+            
 
         case CREATE_CHAPTER_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 error: false,
-                userInfo: action.payload.data,
+                chapter: action.payload,
+                success:true,
             }
-            break;
+            
 
         case CREATE_CHAPTER_ERROR:
             return {
@@ -158,16 +172,74 @@ export const createChapterReducer = (state = {
                 loading: true,
                 error: action.payload.error,
             }
-            break;
+            
+
+        case CREATE_CHAPTER_RESET:
+            return {
+                ...state,
+                loading: true,
+                success:false,
+                error: null,
+                chapter:null
+            }
 
         default:
-            return {}
-            break;
+            return {...state}
+            
+    }
+}
+
+export const updateChapterReducer = (state = {
+    loading: false,
+}, action) => {
+    switch (action.type) {
+        case UPDATE_CHAPTER_REQUEST:
+            return {
+                ...state,
+                loading: true,
+                error: false,
+            }
+            
+
+        case UPDATE_CHAPTER_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                error: false,
+                chapter: action.payload,
+                success:true,
+            }
+            
+
+        case UPDATE_CHAPTER_ERROR:
+            return {
+                ...state,
+                loading: true,
+                error: action.payload.error,
+            }
+            
+
+        case UPDATE_CHAPTER_RESET:
+            return {
+                ...state,
+                loading: true,
+                success:false,
+                error: null,
+                chapter:null
+            }
+
+        default:
+            return {...state,
+                loading: false,
+                success:false,
+            }
+          
     }
 }
 
 export const readChapterReducer = (state = {
     loading: false,
+    chapter:[]
 }, action) => {
     switch (action.type) {
         case READ_CHAPTER_REQUEST:
@@ -176,7 +248,7 @@ export const readChapterReducer = (state = {
                 loading: true,
                 error: false,
             }
-            break;
+            
 
         case READ_CHAPTER_SUCCESS:
             return {
@@ -184,7 +256,7 @@ export const readChapterReducer = (state = {
                 loading: false,
                 error: false,
                 chapter: action.payload.chapter,
-                count:action.payload.total_chapters,
+                count: action.payload.total_chapters,
             }
 
         case READ_CHAPTER_ERROR:
@@ -230,6 +302,111 @@ export const listChapterReducer = (state = {
 
         default:
             return {}
-            break;
+            
+    }
+}
+
+
+export const listAdminStoryReducer = (state = {
+    loading: false,
+}, action) => {
+    switch (action.type) {
+        case LIST_ADMIN_STORY_REQUEST:
+            return {
+                ...state,
+                loading: true,
+                error: false,
+            }
+
+
+        case LIST_ADMIN_STORY_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                error: false,
+                story: action.payload,
+            }
+
+
+        case LIST_ADMIN_STORY_ERROR:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload.error,
+            }
+
+
+        default:
+            return {state}
+
+    }
+}
+
+export const listAdminChapterReducer = (state = {
+    loading: false,
+    chapters: [],
+}, action) => {
+    switch (action.type) {
+        case LIST_ADMIN_CHAPTER_REQUEST:
+            return {
+                ...state,
+                loading: true,
+                error: false,
+                chapters: [],
+            }
+
+        case LIST_ADMIN_CHAPTER_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                error: false,
+                chapters: action.payload,
+            }
+
+        case LIST_ADMIN_CHAPTER_ERROR:
+            return {
+                ...state,
+                loading: true,
+                chapters: [],
+                error: action.payload,
+            }
+
+        default:
+            return {...state}
+          
+    }
+}
+
+export const readAdminChapterReducer = (state = {
+    loading: false,
+    chapter:[]
+}, action) => {
+    switch (action.type) {
+        case READ_CHAPTER_REQUEST:
+            return {
+                ...state,
+                loading: true,
+                error: false,
+            }
+            
+
+        case READ_CHAPTER_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                error: false,
+                chapter: action.payload.chapter,
+                count: action.payload.total_chapters,
+            }
+
+        case READ_CHAPTER_ERROR:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload,
+            }
+
+        default:
+            return state
     }
 }
