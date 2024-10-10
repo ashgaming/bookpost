@@ -13,6 +13,7 @@ from django.conf import settings
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from urllib.parse import quote , unquote
 
 from django.core.cache import cache
 
@@ -62,6 +63,7 @@ def listStory(request):
     try:
         story = Story.objects.all()
         serializer = StoryListSerializer(story,many=True)
+        print(serializer.data)
         return Response(serializer.data)
     except:
         message = {'details':'User with this email already exists'}
@@ -179,33 +181,39 @@ def updateChapter(request, storyid, chapterid):
     print(data)
     try:
         # Fetch the user (you might want to replace this with the authenticated user)
-        user = User.objects.get(id=1)
-        
+        user = User.objects.get(id=1)  # Ideally replace this with authenticated user
+
         # Fetch the specific story by storyid
         story = Story.objects.get(_id=storyid)
-        
+
         # Fetch the chapter to update by chapterid
         chap = Chapter.objects.get(_id=chapterid, story=story)
-        
+
         # Update chapter fields
-        chap.title = data.get('title', chap.title)  # Retain the original if no new value provided
-        chap.summary = data.get('summary', chap.summary)
-        chap.chapter = data.get('chapter', chap.chapter)
-        if(data['cover']!=''):
-            chap.cover = data.get('cover', chap.cover)
+        if data.get('title') is not None:
+            chap.title = data['title']  # Update title if provided
+        if data.get('summary') is not None:
+            chap.summary = data['summary']  # Update summary if provided
+        if data.get('chapter') is not None:
+            chap.chapter = data['chapter']  # Update chapter if provided
+
+        # Only update cover if a new value is provided
+        if 'cover' in data and data['cover'] != '':
+            chap.cover = data['cover']  # Update cover if provided
+
         chap.updatedAt = datetime.now()  # Add a field to track update time (optional)
-        
+
         # Save the updated chapter
         chap.save()
 
         # Serialize the updated chapter data and return response
         serializer = ChapterSerializer(chap, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
     except Chapter.DoesNotExist:
         message = {'message': 'Chapter not found'}
         return Response(message, status=status.HTTP_404_NOT_FOUND)
-    
+
     except Story.DoesNotExist:
         message = {'message': 'Story not found'}
         return Response(message, status=status.HTTP_404_NOT_FOUND)
@@ -214,24 +222,27 @@ def updateChapter(request, storyid, chapterid):
         message = {'message': f'Failed to update chapter: {str(e)}'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
-
 #done
 @api_view(['POST'])
 def uploadImage(request):
-    data=request.data
+    data = request.data
     image = request.FILES.get('image')
-    print(data)
 
     if not image:
         return Response({"error": "No image provided"}, status=400)
-    
-    image_path = os.path.join('', image.name)
- #   image_path = os.path.join('static/images/', image.name)
-    
-    path = default_storage.save(image_path, ContentFile(image.read()))
-    image_url = os.path.join(settings.MEDIA_URL, path)
 
-    return Response({"image_url": image_url})
+    # Sanitize the image name by replacing spaces and other characters
+    image_name = image.name.replace(' ', '_')  # Replacing spaces with underscores
+    image_path = os.path.join('images/', image_name)  # Adjust directory as needed
+    
+    # Save the image file
+    path = default_storage.save(image_path, ContentFile(image.read()))
+    
+    # Construct the URL and encode it properly
+    image_url = os.path.join(settings.MEDIA_URL, path)
+    encoded_image_url = quote(image_url, safe=':/')  # Encode the URL
+    
+    return Response({"image_url": encoded_image_url})
 
 
 @api_view(['GET'])
@@ -276,3 +287,27 @@ def listAdminChapter(request, storyid):
         # General error handling
         print(e)
         return Response({'details': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+def deleteImage(request):
+    image_url = request.data.get('image_url')
+
+    if not image_url:
+        return Response({"error": "No image URL provided"}, status=400)
+
+    # Decode the URL back to the file path
+    decoded_image_url = unquote(image_url)
+
+    # Extract the file path from the MEDIA_URL (i.e., strip the MEDIA_URL part)
+    image_path = decoded_image_url.replace(settings.MEDIA_URL, '')
+
+    # Get the full path of the image on the server
+    full_image_path = os.path.join(settings.MEDIA_ROOT, image_path)
+
+    # Check if the file exists and delete it
+    if default_storage.exists(full_image_path):
+        default_storage.delete(full_image_path)
+        return Response({"message": "Image deleted successfully"})
+    else:
+        return Response({"error": "Image not found"}, status=404)

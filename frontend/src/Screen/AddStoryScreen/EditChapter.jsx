@@ -5,9 +5,8 @@ import { UploadImage } from '../../Helper/StoryHelp';
 import { readChapter, updateChapter } from '../../Redux/Action/StoryAction';
 import Loader from '../../Components/Message/Loader';
 import Message from '../../Components/Message/Message';
-import { CorrectUrl } from '../../Helper/ImageUrlCorrect';
 import LoaderModel from '../../Components/Message/LoaderModel';
-import { UPDATE_CHAPTER_RESET } from '../../Redux/Constant/StoryConstant';
+import { UPDATE_CHAPTER_RESET , READ_CHAPTER_RESET } from '../../Redux/Constant/StoryConstant';
 
 const EditChapter = ({ dispatch }) => {
     const { storyid, chapterid } = useParams();
@@ -19,8 +18,8 @@ const EditChapter = ({ dispatch }) => {
     const { loading, error, chapter } = editChapterState;
 
     const updateChapterState = useSelector(state => state.updateChapter);
-    const { loading: updateLoading, 
-       // error: updateError,
+    const { loading: updateLoading,
+        // error: updateError,
         success } = updateChapterState;
 
     // Form fields refs
@@ -29,6 +28,9 @@ const EditChapter = ({ dispatch }) => {
     const summaryRef = useRef(null);
 
     const navigate = useNavigate();
+
+    const [oldForm, setOldForm] = useState({})
+
 
     // Step 1: Fetch chapter if not already loaded or chapterid doesn't match
     useEffect(() => {
@@ -42,42 +44,59 @@ const EditChapter = ({ dispatch }) => {
                 chapterRef.current.value = chapter.chapter || '';
                 summaryRef.current.value = chapter.summary || '';
 
-                const url = await CorrectUrl(chapter.cover);
-                setImage(url || '');
-
+                setImage(chapter.cover || '');
             }
             setIsFormInitialized(true);  // Mark form as initialized
         };
 
         if (chapter && chapter._id == chapterid && !isFormInitialized) {
             initializeForm();
+            setOldForm({
+                title: chapter.title,
+                chapter: chapterRef.current.value,
+                summary: summaryRef.current.value,
+                cover: chapter.cover,
+            })
         }
+
+
         // }
     }, [dispatch, storyid, chapterid, chapter?._id]);
 
-
-
     const handleSubmit = (e) => {
         e.preventDefault();
-        const formData = {
-            title: titleRef.current.value,
-            chapter: chapterRef.current.value,
-            summary: summaryRef.current.value,
-            cover: image,
-        };
+
+        const formData = {}; // Initialize an empty object
+
+        // Conditionally add properties based on changes
+        if (titleRef.current.value !== oldForm.title) {
+            formData.title = titleRef.current.value; // Add title if it has changed
+        }
+        if (chapterRef.current.value !== oldForm.chapter) {
+            formData.chapter = chapterRef.current.value; // Add chapter if it has changed
+        }
+        if (summaryRef.current.value !== oldForm.summary) {
+            formData.summary = summaryRef.current.value; // Add summary if it has changed
+        }
+        if (image !== oldForm.cover) {
+            console.log('image',image)
+            console.log('old img',oldForm.image)
+            formData.cover = image; // Add cover if it has changed
+        }
+
+      
 
         dispatch(updateChapter(storyid, chapterid, formData));
 
-
     };
 
-    console.log('sucess', success)
 
     useEffect(() => {
         if (success) {
             alert('Chapter Updated ...')
             navigate(`/add/story/${storyid}`);
             dispatch({ type: UPDATE_CHAPTER_RESET })
+            dispatch({ type: READ_CHAPTER_RESET })
         }
     }, [success])
 
@@ -113,7 +132,7 @@ const EditChapter = ({ dispatch }) => {
             <div className="relative max-h-52 aspect-[9/16] bg-gray-200 overflow-hidden left-1/3 align-middle">
                 <img
                     src={image}
-                    alt="Uploaded"
+                    alt=""
                     className="object-cover w-full h-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
                 />
             </div>

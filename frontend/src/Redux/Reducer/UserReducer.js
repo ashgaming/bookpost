@@ -6,6 +6,7 @@ import {
     USER_REGISTER_REQUEST,
     USER_REGISTER_SUCCESS,
     USER_REGISTER_ERROR,
+    USER_REGISTER_RESET,
 
     USER_DETAILS_REQUEST,
     USER_DETAILS_SUCCESS,
@@ -24,7 +25,7 @@ export const userLoginReducer = (state = {
                 loading: true,
                 error: false,
             }
-            
+
 
         case USER_LOGIN_SUCCESS:
             return {
@@ -33,7 +34,7 @@ export const userLoginReducer = (state = {
                 error: false,
                 token: action.payload.token,
             }
-            
+
 
         case USER_LOGIN_ERROR:
             return {
@@ -41,17 +42,17 @@ export const userLoginReducer = (state = {
                 loading: false,
                 error: action.payload,
             }
-            
+
 
         case USER_LOGOUT:
             return {
                 loading: false,
             }
-            
+
 
         default:
             return { ...state }
-            
+
     }
 }
 
@@ -65,28 +66,38 @@ export const userRegisterReducer = (state = {
                 loading: true,
                 error: false,
             }
-            
+
 
         case USER_REGISTER_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 error: false,
-                userInfo: action.payload.data,
+                token: action.payload.data,
+                success: true,
             }
-            
+
 
         case USER_REGISTER_ERROR:
             return {
                 ...state,
-                loading: true,
+                loading: false,
                 error: action.payload.error,
             }
-            
+
+        case USER_REGISTER_RESET:
+            return {
+                ...state,
+                loading: false,
+                success:false,
+                error:null,
+                token:'',
+            }
+
 
         default:
             return { ...state }
-            
+
     }
 }
 

@@ -6,6 +6,7 @@ import {
     CREATE_CHAPTER_REQUEST,
     CREATE_CHAPTER_SUCCESS,
     CREATE_CHAPTER_ERROR,
+    CREATE_CHAPTER_RESET,
 
     LIST_STORY_REQUEST,
     LIST_STORY_SUCCESS,
@@ -23,6 +24,7 @@ import {
     READ_CHAPTER_REQUEST,
     READ_CHAPTER_SUCCESS,
     READ_CHAPTER_ERROR,
+    READ_CHAPTER_RESET,
 
     READ_STORY_DETAILS_REQUEST,
     READ_STORY_DETAILS_SUCCESS,
@@ -35,7 +37,6 @@ import {
     LIST_ADMIN_CHAPTER_REQUEST,
     LIST_ADMIN_CHAPTER_SUCCESS,
     LIST_ADMIN_CHAPTER_ERROR,
-    CREATE_CHAPTER_RESET,
 
 
 } from '../Constant/StoryConstant'
@@ -214,7 +215,7 @@ export const updateChapterReducer = (state = {
         case UPDATE_CHAPTER_ERROR:
             return {
                 ...state,
-                loading: true,
+                loading: false,
                 error: action.payload.error,
             }
             
@@ -264,6 +265,13 @@ export const readChapterReducer = (state = {
                 ...state,
                 loading: false,
                 error: action.payload,
+            }
+
+        case READ_CHAPTER_RESET:
+            return{
+                ...state,
+                loading:false,
+                chapter:[]
             }
 
         default:

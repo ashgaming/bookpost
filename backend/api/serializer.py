@@ -70,28 +70,64 @@ class StoryListSerializer(serializers.ModelSerializer):
      class Meta:
         model = Story
         fields = ['_id','name','cover','summary']
+    
+     def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # Ensure the 'url' is handled as a plain string without encoding
+        representation['cover'] = str(instance.cover)
+        return representation
 
 class StorySerializer(serializers.ModelSerializer):
      class Meta:
         model = Story
         fields = '__all__'
 
+     def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # Ensure the 'url' is handled as a plain string without encoding
+        representation['cover'] = str(instance.cover)
+        return representation
+
 class ChapterListSerializer(serializers.ModelSerializer):
      class Meta:
         model = Chapter
         fields = ['_id','title','cover']
 
+     def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # Ensure the 'url' is handled as a plain string without encoding
+        representation['cover'] = str(instance.cover)
+        return representation
+     
 class ChapterSerializer(serializers.ModelSerializer):
      class Meta:
         model = Chapter
         fields = '__all__'
 
+     def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # Ensure the 'url' is handled as a plain string without encoding
+        representation['cover'] = str(instance.cover)
+        return representation
+     
 class StoryListAdminSerializer(serializers.ModelSerializer):
      class Meta:
         model = Story
         fields = ['_id','name','category','createdAt']
 
+     def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # Ensure the 'url' is handled as a plain string without encoding
+        representation['cover'] = str(instance.cover)
+        return representation
+     
 class ChapterListAdminSerializer(serializers.ModelSerializer):
      class Meta:
         model = Chapter
         fields = ['_id','title','createdAt','views','likes']
+
+     def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # Ensure the 'url' is handled as a plain string without encoding
+        representation['cover'] = str(instance.cover)
+        return representation

@@ -1,25 +1,25 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Stars from '../Element/Stars'
-import { CorrectUrl } from '../../Helper/ImageUrlCorrect';
 
 const BookDetails = ({ book }) => {
     const [cover, setCover] = useState();
 
     // Avoid setting state during render. Move it into useEffect.
-    useEffect(() => {
+  /*  useEffect(() => {
         if (book && book.cover) {
             CorrectUrl(book.cover).then((cor) => {
-                setCover(cor); // Set the cover only when the correct URL is resolved
+              //  setCover(cor); // Set the cover only when the correct URL is resolved
             });
         }
-    }, [book]);
+    }, [book]);*/
 
     // Return null if book is undefined to avoid rendering an empty UI
     if (!book) {
         return null;
     }
   
+    console.log(book.cover)
 
     return (
         <section className="text-gray-700 body-font overflow-hidden bg-white">
@@ -29,7 +29,7 @@ const BookDetails = ({ book }) => {
                     <img
                         alt="ecommerce"
                         className="lg:w-1/2 w-full object-cover object-center rounded border border-gray-200"
-                        src={cover}
+                        src={book.cover}
                         loading="lazy"
                     />
                     <div className="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">

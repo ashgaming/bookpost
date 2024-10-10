@@ -64,7 +64,7 @@ const ListChapter = () => {
                         <Link to={`/story/${id}/chapter/${chapter._id}`} className="block w-full">
                             <img
                                 className="object-cover w-full h-48 rounded-t-xl transition duration-300 transform hover:scale-105"
-                                src={ `${backend}/${chapter.cover.slice(32)}` } // Use resolved URL or fallback
+                                src={ chapter.cover } // Use resolved URL or fallback
                                 alt={`Chapter cover for ${chapter.title}`}
                             />
 
