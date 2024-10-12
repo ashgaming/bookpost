@@ -35,6 +35,9 @@ import {
     LIST_ADMIN_CHAPTER_REQUEST,
     LIST_ADMIN_CHAPTER_SUCCESS,
     LIST_ADMIN_CHAPTER_ERROR,
+    UPDATE_STORY_REQUEST,
+    UPDATE_STORY_SUCCESS,
+    UPDATE_STORY_ERROR,
 
 } from '../Constant/StoryConstant'
 import { backend } from '../../Connection/conn'
@@ -214,6 +217,26 @@ export const updateChapter = (storyid,chapterid,fdata) => async (dispatch) => {
     catch (err) {
         dispatch({
             type: UPDATE_CHAPTER_ERROR,
+            payload: err
+        })
+    }
+}
+
+export const updateStory = (storyid,fdata) => async (dispatch) => {
+    try {
+        console.log(fdata)
+        dispatch({ type: UPDATE_STORY_REQUEST })
+
+        const { data } = await axios.put(`${backend}/api/story/${storyid}/update`, fdata, config)
+        dispatch({
+            type: UPDATE_STORY_SUCCESS,
+            payload: data
+        })
+
+    }
+    catch (err) {
+        dispatch({
+            type: UPDATE_STORY_ERROR,
             payload: err
         })
     }

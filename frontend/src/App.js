@@ -16,6 +16,7 @@ import ListStoriesScreen from './Screen/AddStoryScreen/ListStoryiesScreen';
 import ListChapterScreen from './Screen/AddStoryScreen/ListChapterScreen';
 import EditChapter from './Screen/AddStoryScreen/EditChapter';
 import { useDispatch } from 'react-redux';
+import EditStoryScreen from './Screen/AddStoryScreen/EditStoryScreen';
 
 // Layout component to handle Header visibility
 function Layout({ children }) {
@@ -50,6 +51,7 @@ function App() {
     { path: '/test', component: TestScreen },
     { path: '/story-option', component: StoryOption },
     { path: '/create-story', component: CreateStory },
+    { path: '/edit-story/:storyid', component: EditStoryScreen },
     { path: '/list-story', component: ListStoriesScreen },
     { path: 'add/story/:storyid', component: ListChapterScreen },
     { path: 'add/story/:storyid/add', component: AddChapterScreen },

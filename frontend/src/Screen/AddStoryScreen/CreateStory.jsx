@@ -6,21 +6,21 @@ import Message from '../../Components/Message/Message';
 import Loader from '../../Components/Message/Loader';
 
 const CreateStory = ({ dispatch }) => {
-
-    const CreateStory = useSelector(state => state.createStory)
-    const { loading, error, success } = CreateStory
-
+    const CreateStory = useSelector(state => state.createStory);
+    const { loading, error, success } = CreateStory;
 
     const titleRef = useRef(null);
     const desRef = useRef(null);
     const imgRef = useRef(null);
     const catRef = useRef(null);
-    const [iurl, setIurl] = useState('');  // Image URL state
+    const [iurl, setIurl] = useState(''); // Image URL state
     const [formData, setFormData] = useState({
         title: '',
         description: '',
         image: ''
     });
+    const [uploading, setUploading] = useState(false); // Loader state for image upload
+    const [uploadProgress, setUploadProgress] = useState(0); // Upload progress state
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -31,14 +31,6 @@ const CreateStory = ({ dispatch }) => {
             description: desRef.current.value,
             category: catRef.current.value,
             image: iurl, // Image URL
-        });
-
-        console.log('Form submitted', {
-            title: titleRef.current.value,
-            description: desRef.current.value,
-            category: catRef.current.value,
-            image: iurl,
-
         });
 
         dispatch(createStory({
@@ -58,37 +50,51 @@ const CreateStory = ({ dispatch }) => {
             title: '',
             description: '',
             image: ''
-        })
+        });
 
-        titleRef.current.value = null
-        desRef.current.value = null
-        imgRef.current.value = null
-        catRef.current.value = null
+        titleRef.current.value = null;
+        desRef.current.value = null;
+        imgRef.current.value = null;
+        catRef.current.value = null;
 
-        setIurl('')
-    }
+        setIurl('');
+    };
 
     const uploadImage = async (e) => {
         e.preventDefault();
         const file = e.target.files[0]; // Get the selected file
         if (file) {
+            setUploading(true); // Set uploading to true
+            setUploadProgress(0); // Reset progress
+
             try {
-                const uploadedUrl = await UploadImage(file); // Upload image
+                // Modify the UploadImage function to track progress
+                const uploadedUrl = await UploadImage(file, (progressEvent) => {
+                    const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                    setUploadProgress(progress); // Update progress
+                });
                 setIurl(uploadedUrl); // Set the image URL for display
             } catch (error) {
                 console.error("Image upload failed", error);
+            } finally {
+                setUploading(false); // Reset uploading state
             }
         }
     };
 
     return (
-
         <form onSubmit={handleSubmit} className="form bg-white p-6 my-10 relative max-w-lg mx-auto shadow-lg rounded-lg">
             <h3 className="text-2xl text-gray-900 font-semibold">Add your latest story!</h3>
             <p className="text-gray-600">Let me know what is in your mind</p>
 
             {loading && <Loader />}
             {error && <Message>{error}</Message>}
+            {uploading && (
+                <div className="flex flex-col items-center">
+                    <Loader />
+                    <p>Uploading image: {uploadProgress}%</p>
+                </div>
+            )}
             <div className="flex space-x-5 mt-3">
                 <input
                     type="text"

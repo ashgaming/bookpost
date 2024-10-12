@@ -21,6 +21,7 @@ urlpatterns = [
     path('admin/story/<str:storyid>/chapter/list',views.listAdminChapter, name="list-chapter-admin"),
     path('story/create/',views.createStory, name="create-story-admin"),
     path('story/<str:storyid>/chapter/create/',views.createChapter, name="create-chapter-admin"),
-    path('story/<str:storyid>/chapter/<str:chapterid>/update',views.updateChapter, name="create-chapter-admin"),
+    path('story/<str:storyid>/chapter/<str:chapterid>/update',views.updateChapter, name="update-chapter-admin"),
+    path('story/<str:storyid>/update',views.updateStory, name="update-chapter-admin"),
 ]
 

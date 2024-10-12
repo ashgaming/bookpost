@@ -37,6 +37,10 @@ import {
     LIST_ADMIN_CHAPTER_REQUEST,
     LIST_ADMIN_CHAPTER_SUCCESS,
     LIST_ADMIN_CHAPTER_ERROR,
+    UPDATE_STORY_REQUEST,
+    UPDATE_STORY_SUCCESS,
+    UPDATE_STORY_ERROR,
+    UPDATE_STORY_RESET,
 
 
 } from '../Constant/StoryConstant'
@@ -138,9 +142,7 @@ export const readStoryDetailsReducer = (state = {
 
 
         default:
-            return {
-                ...state,
-            }
+            return state           
 
     }
 }
@@ -416,5 +418,53 @@ export const readAdminChapterReducer = (state = {
 
         default:
             return state
+    }
+}
+
+export const updateStoryReducer = (state = {
+    loading: false,
+}, action) => {
+    switch (action.type) {
+        case UPDATE_STORY_REQUEST:
+            return {
+                ...state,
+                loading: true,
+                error: false,
+            }
+            
+
+        case UPDATE_STORY_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                error: false,
+                book: action.payload,
+                success:true,
+            }
+            
+
+        case UPDATE_STORY_ERROR:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload.error,
+            }
+            
+
+        case UPDATE_STORY_RESET:
+            return {
+                ...state,
+                loading: true,
+                success:false,
+                error: null,
+                book:null
+            }
+
+        default:
+            return {...state,
+                loading: false,
+                success:false,
+            }
+          
     }
 }

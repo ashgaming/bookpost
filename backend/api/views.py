@@ -288,6 +288,47 @@ def listAdminChapter(request, storyid):
         print(e)
         return Response({'details': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+@api_view(['PUT'])  # Using 'PUT' to update an existing chapter
+def updateStory(request, storyid, chapterid):
+    data = request.data
+    print(data)
+    try:
+        # Fetch the user (you might want to replace this with the authenticated user)
+        user = User.objects.get(id=1)  # Ideally replace this with authenticated user
+
+        # Fetch the specific story by storyid
+        story = Story.objects.get(_id=storyid)
+
+        # Update chapter fields
+        if data.get('title') is not None:
+            story.name = data['title']  # Update title if provided
+        if data.get('summary') is not None:
+            story.summary = data['summary']  # Update summary if provided
+        if data.get('category') is not None:
+            story.category = data['category']  # Update chapter if provided
+
+        # Only update cover if a new value is provided
+        if 'cover' in data and data['cover'] != '':
+            story.cover = data['cover']  # Update cover if provided
+
+        story.updatedAt = datetime.now()  # Add a field to track update time (optional)
+
+        # Save the updated chapter
+        story.save()
+
+        # Serialize the updated chapter data and return response
+        serializer = StorySerializer(story, many=False)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    
+    except Story.DoesNotExist:
+        message = {'message': 'Story not found'}
+        return Response(message, status=status.HTTP_404_NOT_FOUND)
+
+    except Exception as e:
+        message = {'message': f'Failed to update story: {str(e)}'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['POST'])
 def deleteImage(request):

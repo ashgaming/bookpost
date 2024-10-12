@@ -19,7 +19,7 @@ const ListStoriesScreen = ({ dispatch }) => {
         'category',
         'Created At',
         'Story ID',
-        'Status',
+        'Action',
     ]
 
     const PressHandler = (e, id) => {
@@ -85,31 +85,35 @@ const ListStoriesScreen = ({ dispatch }) => {
                             <tbody>
                                 {
                                     story.map((item, index) => (
-                                        <tr className='bg-slate-50 hover:bg-yellow-200' onClick={e => PressHandler(e, item._id)}>
+                                        <tr className='bg-slate-50 hover:bg-yellow-200'>
 
-                                            <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                                            <td className="px-5 py-5 border-b border-gray-200 text-sm" onClick={e => PressHandler(e, item._id)}>
                                                 <p className="text-gray-900 whitespace-no-wrap">
                                                     {item.name}
                                                 </p>
                                             </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                                            <td className="px-5 py-5 border-b border-gray-200 text-sm" onClick={e => PressHandler(e, item._id)}>
                                                 <p className="text-gray-900 whitespace-no-wrap">{item.category}</p>
                                             </td>
-                                            <td className="px-5 py-5 border-b border-gray-200  text-sm">
+                                            <td className="px-5 py-5 border-b border-gray-200  text-sm" onClick={e => PressHandler(e, item._id)}>
                                                 <p className="text-gray-900 whitespace-no-wrap">
                                                     {new Date(item.createdAt).toLocaleDateString()}
                                                 </p>
                                             </td>
-                                            <td className="px-5 py-5 border-b border-gray-200  text-sm">
+                                            <td className="px-5 py-5 border-b border-gray-200  text-sm" onClick={e => PressHandler(e, item._id)}>
                                                 <p className="text-gray-900 whitespace-no-wrap">{item._id}</p>
                                             </td>
-                                            <td className="px-5 py-5 border-b border-gray-200  text-sm">
+                                            <td className="px-5 py-5 border-b border-gray-200  text-sm" onClick={e =>navigate(`/edit-story/${item._id}`)}>
                                                 <span className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
                                                     <span
                                                         aria-hidden
                                                         className="absolute inset-0 bg-green-200 opacity-50 rounded-full"
                                                     ></span>
-                                                    <span className="relative">{item.status || 'Active'}</span>
+                                                    <span className="relative">{
+                                                        <button className="rounded-md">
+                                                            Edit
+                                                        </button>
+                                                }</span>
                                                 </span>
                                             </td>
 

@@ -17,16 +17,11 @@ const initialState = {
 
 
 const middleware = [thunk]
-/*
-const store = createStore(combineReducer, initialState,
+
+/*const store = createStore(combineReducer, initialState,
     composeWithDevTools(applyMiddleware(...middleware),
     ))
-
-
 */
-
-
-
 
 const store = createStore(combineReducer, initialState,
     applyMiddleware(...middleware))

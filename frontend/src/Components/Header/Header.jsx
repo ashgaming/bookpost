@@ -21,7 +21,9 @@ export default function Header() {
 
     useEffect(()=>{
         if(token){
-            dispatch(verifyUser(token));
+            if(!userInfo?._id){
+                dispatch(verifyUser(token));
+            }
         }
     },[token,dispatch])
 
