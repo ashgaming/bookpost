@@ -2,6 +2,8 @@ import React, { useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { loginUser } from '../../Redux/Action/UserAcrion';
 import { useSelector } from 'react-redux';
+import Loader from '../../Components/Message/Loader';
+import Message from '../../Components/Message/Message';
 const image = require('../AuthScreen/assets/log.webp');
 
 const LoginScreen = ({dispatch}) => {
@@ -11,7 +13,8 @@ const LoginScreen = ({dispatch}) => {
 
     const userLogin = useSelector(state=>state.userLogin)
     const { 
-       // loading,error,
+        loading,error,
+       success,
         token } = userLogin
 
     const SubmitHandler = (e) =>{
@@ -23,17 +26,23 @@ const LoginScreen = ({dispatch}) => {
     }
 
     useEffect(()=>{
-        if(token){
-            navigate('/');
-        }else{
-            return;
+        if(success)
+        {
+            if(token){
+                navigate('/');
+            }else{
+                return;
+            }
         }
-    },[token,navigate])
+    },[token,navigate,success])
+
+
 
     return (
         <>
         <div className="bg-sky-100 flex justify-center items-center h-screen">
-
+            {loading && <Loader />}
+            {error && <Message>{error}</Message>}
             <div className="w-1/2 h-screen hidden lg:block">
                 <img src={image} alt="" className="object-cover w-full h-full" />
             </div>

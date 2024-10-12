@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { backend } from '../Connection/conn';
 
 const config = {
     headers: {
@@ -11,10 +12,10 @@ export const UploadImage = async (file) => {
     formData.append('image', file);
 
     try {
-        const response = await axios.post(`http://127.0.0.1:8000/api/upload-image/`, formData, config);
+        const response = await axios.post(`${backend}/api/upload-image/`, formData, config);
 
         if (response.status === 200) {
-            const uploadedImageUrl = `http://127.0.0.1:8000` + response.data.image_url;
+            const uploadedImageUrl = `${backend}` + response.data.image_url;
             alert('Image uploaded successfully');
             return uploadedImageUrl;
         } else {
