@@ -16,11 +16,7 @@ import {
     USER_DETAILS_RESET
 } from '../Constant/UserConstant'
 
-const config = {
-    headers: {
-        'Content-type': 'application/json'
-    }
-}
+
 
 export const loginUser = (email, password) => async (dispatch) => {
     try {
@@ -31,13 +27,24 @@ export const loginUser = (email, password) => async (dispatch) => {
             "password": password,
 
         }
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json'
+            },
+            withCredentials: true,
+        }
+
+
         const { data } = await axios.post(`${backend}/api/login/`, fdata, config)
         dispatch({
             type: USER_LOGIN_SUCCESS,
             payload: data
         })
 
-        localStorage.setItem('token', JSON.stringify(data.token))
+
+        localStorage.setItem('token', data.token)
+        localStorage.setItem('access', JSON.stringify(data.access))
 
     }
     catch (err) {
@@ -48,16 +55,19 @@ export const loginUser = (email, password) => async (dispatch) => {
     }
 }
 
-export const registerUser = (email, password) => async (dispatch) => {
+export const registerUser = (fdata) => async (dispatch) => {
     try {
         dispatch({ type: USER_REGISTER_REQUEST })
 
-        const fdata = {
-            "username": email,
-            "password": password,
 
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json'
+            }
         }
-        const { data } = await axios.post(`${backend}/api/login/`, fdata, config)
+
+        const { data } = await axios.post(`${backend}/api/register/`, fdata, config)
         dispatch({
             type: USER_REGISTER_SUCCESS,
             payload: data
@@ -74,15 +84,21 @@ export const registerUser = (email, password) => async (dispatch) => {
     }
 }
 
-export const verifyUser = (toke) => async (dispatch,getState) => {
+export const verifyUser = (token) => async (dispatch, getState) => {
     try {
         dispatch({ type: USER_DETAILS_REQUEST })
 
-    //    const {
-    //        userLogin: { token },
-     //       } = getState()
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization:`Bearer ${token}`
+            }
+        }
 
-        const { data } = await axios.get(`${backend}/api/user/details/${toke}`, config)
+        console.log(token)
+
+        const { data } = await axios.get(`${backend}/api/user/details/${token}`, config)
+
         dispatch({
             type: USER_DETAILS_SUCCESS,
             payload: data
@@ -97,8 +113,8 @@ export const verifyUser = (toke) => async (dispatch,getState) => {
     }
 }
 
-export const logoutUser =()=> (dispatch) =>{
+export const logoutUser = () => (dispatch) => {
     localStorage.removeItem('token');
-    dispatch({type:USER_LOGOUT})
-    dispatch({type:USER_DETAILS_RESET})
+    dispatch({ type: USER_LOGOUT })
+    dispatch({ type: USER_DETAILS_RESET })
 }

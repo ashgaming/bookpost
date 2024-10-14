@@ -1,15 +1,21 @@
 import axios from 'axios';
 import { backend } from '../Connection/conn';
 
-const config = {
-    headers: {
-        'Content-Type': 'multipart/form-data',
-    }
-};
 
 export const UploadImage = async (file) => {
     const formData = new FormData();
     formData.append('image', file);
+
+
+    const token = localStorage.getItem('token');
+    const config = {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+    };
+    
 
     try {
         const response = await axios.post(`${backend}/api/upload-image/`, formData, config);
@@ -22,7 +28,7 @@ export const UploadImage = async (file) => {
             alert('Failed to upload image');
         }
     } catch (err) {
-        console.error('Error uploading image:', err);
+        alert('Error uploading image:', err);
         throw new Error('Image upload failed');
     }
 };

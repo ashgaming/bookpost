@@ -25,6 +25,7 @@ export const userLoginReducer = (state = {
                 loading: true,
                 error: false,
             }
+            
 
 
         case USER_LOGIN_SUCCESS:
@@ -32,6 +33,7 @@ export const userLoginReducer = (state = {
                 ...state,
                 loading: false,
                 error: false,
+                success:true,
                 token: action.payload.token,
             }
 

@@ -7,6 +7,7 @@ import Loader from '../../Components/Message/Loader';
 import Message from '../../Components/Message/Message';
 import LoaderModel from '../../Components/Message/LoaderModel';
 import { UPDATE_CHAPTER_RESET , READ_CHAPTER_RESET, UPDATE_STORY_RESET } from '../../Redux/Constant/StoryConstant';
+import BackButton from '../../Components/Element/BackButton';
 
 const EditStoryScreen = ({ dispatch }) => {
     const { storyid } = useParams();
@@ -123,7 +124,8 @@ const EditStoryScreen = ({ dispatch }) => {
     if (!book?._id) return null;
     return (
         <form onSubmit={handleSubmit} className="form bg-white p-6 my-10 relative max-w-lg mx-auto shadow-lg rounded-lg">
-            { /*updateLoading && <LoaderModel />*/}
+            <BackButton url={`/list-story`}/>
+            { updateLoading && <LoaderModel />}
             <h3 className="text-2xl text-gray-900 font-semibold">Edit Chapter</h3>
             <div className="flex space-x-5 mt-3">
                 <input
@@ -165,7 +167,7 @@ const EditStoryScreen = ({ dispatch }) => {
                 placeholder="Write Summary here"
                 className="border p-2 mt-3 w-full"
                 ref={summaryRef}
-                maxLength={1000}
+                maxLength={2000}
             />
 
          

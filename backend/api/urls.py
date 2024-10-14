@@ -23,5 +23,17 @@ urlpatterns = [
     path('story/<str:storyid>/chapter/create/',views.createChapter, name="create-chapter-admin"),
     path('story/<str:storyid>/chapter/<str:chapterid>/update',views.updateChapter, name="update-chapter-admin"),
     path('story/<str:storyid>/update',views.updateStory, name="update-chapter-admin"),
+
+    #delete
+    path('delete-chapter/<int:chapter_id>/', views.deleteChapter, name='delete-chapter'),
+    path('delete-story/<int:story_id>/', views.deleteStory, name='delete-story'),
+    
+    #layout
+    path('mostpopular',views.mostpopular, name="mostpopular"),
+    
+
+    #contactus
+    path('contactUs',views.contactUs, name="ContactUs"),
+    path('listContactUs',views.listContactUs, name="listContactUs"),
 ]
 

@@ -1,22 +1,29 @@
 import './App.css';
-import Header from './Components/Header/Header';
-import HomeScreen from './Screen/HomeScreen';
+import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import LoginScreen from './Screen/AuthScreen/LoginScreen';
-import RegisterScreen from './Screen/AuthScreen/RegisterScreen';
-import DisplayBook from './Screen/BookScreen/DisplayBook';
-import StoryOption from './Screen/AddStoryScreen/StoryOption';
-import AboutUs from './Screen/AboutUs/AboutUs';
-import DisplayChapter from './Screen/BookScreen/DisplayChapter';
-import TestScreen from './Screen/TestScreen';
-import ReadChapterScreen from './Screen/BookScreen/ReadChapterScreen';
-import AddChapterScreen from './Screen/AddStoryScreen/AddChapterScreen';
-import CreateStory from './Screen/AddStoryScreen/CreateStory';
-import ListStoriesScreen from './Screen/AddStoryScreen/ListStoryiesScreen';
-import ListChapterScreen from './Screen/AddStoryScreen/ListChapterScreen';
-import EditChapter from './Screen/AddStoryScreen/EditChapter';
 import { useDispatch } from 'react-redux';
-import EditStoryScreen from './Screen/AddStoryScreen/EditStoryScreen';
+
+// Screens
+import Header from './Components/Header/Header';
+import Loader from './Components/Message/Loader';
+
+// Lazy load components
+const HomeScreen = React.lazy(() => import('./Screen/HomeScreen'));
+const LoginScreen = React.lazy(() => import('./Screen/AuthScreen/LoginScreen'));
+const RegisterScreen = React.lazy(() => import('./Screen/AuthScreen/RegisterScreen'));
+const DisplayBook = React.lazy(() => import('./Screen/BookScreen/DisplayBook'));
+const StoryOption = React.lazy(() => import('./Screen/AddStoryScreen/StoryOption'));
+const AboutUs = React.lazy(() => import('./Screen/AboutUs/AboutUs'));
+const DisplayChapter = React.lazy(() => import('./Screen/BookScreen/DisplayChapter'));
+const TestScreen = React.lazy(() => import('./Screen/TestScreen'));
+const ReadChapterScreen = React.lazy(() => import('./Screen/BookScreen/ReadChapterScreen'));
+const AddChapterScreen = React.lazy(() => import('./Screen/AddStoryScreen/AddChapterScreen'));
+const CreateStory = React.lazy(() => import('./Screen/AddStoryScreen/CreateStory'));
+
+const ListStoriesScreen = React.lazy(() => import('./Screen/AddStoryScreen/ListStoriesScreen'));
+const ListChapterScreen = React.lazy(() => import('./Screen/AddStoryScreen/ListChapterScreen'));
+const EditChapter = React.lazy(() => import('./Screen/AddStoryScreen/EditChapter'));
+const EditStoryScreen = React.lazy(() => import('./Screen/AddStoryScreen/EditStoryScreen'));
 
 // Layout component to handle Header visibility
 function Layout({ children }) {
@@ -36,7 +43,8 @@ function Layout({ children }) {
 
 function App() {
   const dispatch = useDispatch();
-  const auth = [
+  
+  const authRoutes = [
     { path: '/', component: HomeScreen },
     { path: '/login', component: LoginScreen },
     { path: '/register', component: RegisterScreen },
@@ -44,36 +52,46 @@ function App() {
     { path: '/about', component: AboutUs },
     { path: '/chapter/:id', component: DisplayChapter },
     { path: '/story/:storyid/chapter/:chapterid', component: ReadChapterScreen },
-
   ];
 
-  const adminAuth = [
+  const adminAuthRoutes = [
     { path: '/test', component: TestScreen },
     { path: '/story-option', component: StoryOption },
     { path: '/create-story', component: CreateStory },
     { path: '/edit-story/:storyid', component: EditStoryScreen },
     { path: '/list-story', component: ListStoriesScreen },
-    { path: 'add/story/:storyid', component: ListChapterScreen },
-    { path: 'add/story/:storyid/add', component: AddChapterScreen },
-    { path: 'add/story/:storyid/chapter/:chapterid/edit', component: EditChapter },
-
-  ]
+    { path: '/add/story/:storyid', component: ListChapterScreen },
+    { path: '/add/story/:storyid/add', component: AddChapterScreen },
+    { path: '/add/story/:storyid/chapter/:chapterid/edit', component: EditChapter },
+  ];
 
   return (
     <div className="App bg-slate-50">
       <Router>
         <Layout>
           <Routes>
-            {auth.map((a) => (
-              <Route path={a.path}
-                element={<a.component dispatch={dispatch} />}
-                key={a.path} />
+            {/* Render routes with lazy loading */}
+            {authRoutes.map((route) => (
+              <Route
+                path={route.path}
+                key={route.path}
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <route.component dispatch={dispatch} />
+                  </Suspense>
+                }
+              />
             ))}
-
-            {adminAuth.map((a) => (
-              <Route path={a.path}
-                element={<a.component dispatch={dispatch} />}
-                key={a.path} />
+            {adminAuthRoutes.map((route) => (
+              <Route
+                path={route.path}
+                key={route.path}
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <route.component dispatch={dispatch} />
+                  </Suspense>
+                }
+              />
             ))}
           </Routes>
         </Layout>

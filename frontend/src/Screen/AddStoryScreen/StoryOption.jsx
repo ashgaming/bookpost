@@ -1,9 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import BackButton from '../../Components/Element/BackButton'
 
 const StoryOption = () => {
     return (
         <div className="main flex flex-col m-5">
+            <BackButton url={`/`}/>
             <div className="header">
                 <div className="text-3xl font-bold text-gray-600 mb-4">Choose Your Option</div>
             </div>

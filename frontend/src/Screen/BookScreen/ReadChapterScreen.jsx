@@ -8,7 +8,7 @@ import Loader from '../../Components/Message/Loader';
 import Message from '../../Components/Message/Message';
 import { backend } from '../../Connection/conn';
 
-export default function ReadChapterScreen({ dispatch }) {
+const ReadChapterScreen = ({ dispatch }) => {
   const { chapterid, storyid } = useParams();
 
   const ReadChapter = useSelector(state => state.readChapter)
@@ -105,3 +105,5 @@ export default function ReadChapterScreen({ dispatch }) {
     </div>
   );
 }
+
+export default ReadChapterScreen;

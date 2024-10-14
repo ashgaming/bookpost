@@ -25,8 +25,8 @@ class Chapter(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL,null=True)
     story = models.ForeignKey(Story, on_delete=models.SET_NULL,null=True)
     title = models.TextField(max_length=200,null=True,blank=True)
-    summary = models.TextField(max_length=200,null=True,blank=True)
-    chapter = models.TextField(max_length=2000,null=True,blank=True)
+    summary = models.TextField(max_length=1000,null=True,blank=True)
+    chapter = models.TextField(max_length=5000,null=True,blank=True)
     rating = models.DecimalField(max_digits=7, decimal_places=2,null=True)
     numReviews = models.IntegerField(null=True,blank=True,default=0)
     createdAt = models.DateTimeField(auto_now_add=True)
@@ -53,4 +53,15 @@ class Review(models.Model):
     def __str__(self):
         return str(self.rating)
     
+class ContactUs(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    name = models.CharField(max_length=200, null=True, blank=True)
+    email = models.EmailField(max_length=254, null=True, blank=True)
+    phone = models.CharField(max_length=15, null=True, blank=True)
+    message = models.TextField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)  # Field to store creation time
 
+    _id = models.AutoField(primary_key=True, editable=False)
+
+    def __str__(self):
+        return self.name or "Unnamed Contact"

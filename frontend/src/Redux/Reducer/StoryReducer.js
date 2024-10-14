@@ -41,6 +41,7 @@ import {
     UPDATE_STORY_SUCCESS,
     UPDATE_STORY_ERROR,
     UPDATE_STORY_RESET,
+    CREATE_STORY_RESET,
 
 
 } from '../Constant/StoryConstant'
@@ -68,8 +69,16 @@ export const createStoryReducer = (state = {
         case CREATE_STORY_ERROR:
             return {
                 ...state,
-                loading: true,
+                loading: false,
                 error: action.payload,
+            }
+
+        case CREATE_STORY_RESET:
+            return{
+                ...state,
+                loading:false,
+                error:null,
+                success:false,
             }
             
 
@@ -109,7 +118,7 @@ export const listStoryReducer = (state = {
             
 
         default:
-            return {}
+            return state
             
     }
 }
@@ -172,7 +181,7 @@ export const createChapterReducer = (state = {
         case CREATE_CHAPTER_ERROR:
             return {
                 ...state,
-                loading: true,
+                loading: false,
                 error: action.payload.error,
             }
             
@@ -180,7 +189,7 @@ export const createChapterReducer = (state = {
         case CREATE_CHAPTER_RESET:
             return {
                 ...state,
-                loading: true,
+                loading: false,
                 success:false,
                 error: null,
                 chapter:null
@@ -225,7 +234,7 @@ export const updateChapterReducer = (state = {
         case UPDATE_CHAPTER_RESET:
             return {
                 ...state,
-                loading: true,
+                loading: false,
                 success:false,
                 error: null,
                 chapter:null
@@ -305,7 +314,7 @@ export const listChapterReducer = (state = {
         case LIST_CHAPTER_ERROR:
             return {
                 ...state,
-                loading: true,
+                loading: false,
                 chapters: [],
                 error: action.payload,
             }
@@ -376,7 +385,7 @@ export const listAdminChapterReducer = (state = {
         case LIST_ADMIN_CHAPTER_ERROR:
             return {
                 ...state,
-                loading: true,
+                loading: false,
                 chapters: [],
                 error: action.payload,
             }

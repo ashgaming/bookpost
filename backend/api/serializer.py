@@ -4,7 +4,7 @@ from datetime import datetime
 from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import User
-from .models import Story , Chapter , Review
+from .models import Story , Chapter , Review , ContactUs
  
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -131,3 +131,9 @@ class ChapterListAdminSerializer(serializers.ModelSerializer):
         # Ensure the 'url' is handled as a plain string without encoding
         representation['cover'] = str(instance.cover)
         return representation
+     
+class ContactUsSerializer(serializers.ModelSerializer):
+     class Meta:
+        model = ContactUs
+        fields = '__all__'
+

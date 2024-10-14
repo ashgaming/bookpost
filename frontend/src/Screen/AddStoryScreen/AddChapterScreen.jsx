@@ -8,6 +8,7 @@ import Message from '../../Components/Message/Message';
 import { CorrectUrl } from '../../Helper/ImageUrlCorrect';
 import LoaderModel from '../../Components/Message/LoaderModel';
 import { UPDATE_CHAPTER_RESET } from '../../Redux/Constant/StoryConstant';
+import BackButton from '../../Components/Element/BackButton';
 
 const AddChapterScreen = ({ dispatch }) => {
     const { storyid } = useParams();
@@ -24,33 +25,6 @@ const AddChapterScreen = ({ dispatch }) => {
     const summaryRef = useRef(null);
 
     const navigate = useNavigate();
-/*
-    // Step 1: Fetch chapter if not already loaded or chapterid doesn't match
-    useEffect(() => {
-        if (!chapter || chapter._id != chapterid) {
-            dispatch(readChapter(storyid, chapterid));
-        }
-
-        const initializeForm = async () => {
-            if (chapter && chapter._id == chapterid && !isFormInitialized) {
-                titleRef.current.value = chapter.title || '';
-                chapterRef.current.value = chapter.chapter || '';
-                summaryRef.current.value = chapter.summary || '';
-
-                const url = await CorrectUrl(chapter.cover);
-                setImage(url || '');
-
-            }
-            setIsFormInitialized(true);  // Mark form as initialized
-        };
-
-        if (chapter && chapter._id == chapterid && !isFormInitialized) {
-            initializeForm();
-        }
-        // }
-    }, [dispatch, storyid, chapterid, chapter?._id]);
-
-*/
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -95,6 +69,7 @@ const AddChapterScreen = ({ dispatch }) => {
     return (
         <form onSubmit={handleSubmit} className="form bg-white p-6 my-10 relative max-w-lg mx-auto shadow-lg rounded-lg">
             {loading && <LoaderModel />}
+            <BackButton url={`/list-story`}/>
             <h3 className="text-2xl text-gray-900 font-semibold">Edit Chapter</h3>
             <div className="flex space-x-5 mt-3">
                 <input
@@ -134,7 +109,7 @@ const AddChapterScreen = ({ dispatch }) => {
                 placeholder="Write Chapter here"
                 className="border p-2 mt-3 w-full"
                 ref={chapterRef}
-                maxLength={200}
+                maxLength={5000}
             />
 
             <input

@@ -6,15 +6,12 @@ import os
 
 from datetime import timedelta
 
-
-
 load_dotenv()
 env = environ.Env()
 environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -29,6 +26,7 @@ ALLOWED_HOSTS = ['http://localhost:3000',
                  'https://bookpost-frontend.onrender.com',
                  'https://bookpost.onrender.com',
                  '127.0.0.1',
+                 'localhost:3000',
                  'bookpost.onrender.com',
                  os.environ.get('REDIS'),
                  ]
@@ -46,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'api.apps.ApiConfig',
     "corsheaders",
+    'debug_toolbar',
    
 ]
 
@@ -60,7 +59,7 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
-    "UPDATE_LAST_LOGIN": False,
+    "UPDATE_LAST_LOGIN": True,
 
     "ALGORITHM": os.environ.get('ALGORITHM'),
     "VERIFYING_KEY": "",
@@ -95,9 +94,10 @@ SIMPLE_JWT = {
 }
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -123,7 +123,16 @@ CORS_ALLOWED_ORIGINS = [
     # Add other domains if needed
 ]
 
+CORS_ALLOW_HEADERS = [
+    'authorization',  # Allow 'Authorization' header for requests
+    'content-type',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
 ROOT_URLCONF = 'backend.urls'
+
+CORS_ALLOW_CREDENTIALS = True
 
 TEMPLATES = [
     {
@@ -161,6 +170,9 @@ DATABASES = {
          
 }
 
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -211,19 +223,17 @@ MEDIA_URL = '/images/'
 
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
-   # BASE_DIR / 'frontend/build/static'
+  
 ]
 
-#STATIC_ROOT = BASE_DIR / 'static'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-MEDIA_ROOT = 'backend/static/images'
+MEDIA_URL = '/images/'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 APPEND_SLASH = False
-
 #STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')

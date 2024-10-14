@@ -16,9 +16,9 @@ import {
     READ_CHAPTER_SUCCESS,
     READ_CHAPTER_ERROR,
 
-    READ_STORY_DETAILS_REQUEST ,
-    READ_STORY_DETAILS_SUCCESS ,
-    READ_STORY_DETAILS_ERROR ,
+    READ_STORY_DETAILS_REQUEST,
+    READ_STORY_DETAILS_SUCCESS,
+    READ_STORY_DETAILS_ERROR,
 
     LIST_CHAPTER_REQUEST,
     LIST_CHAPTER_SUCCESS,
@@ -42,17 +42,28 @@ import {
 } from '../Constant/StoryConstant'
 import { backend } from '../../Connection/conn'
 
+const token = localStorage.getItem('token') ? localStorage.getItem('token') : null;
+
+const Authconfig = {
+    headers: {
+        'Content-type': 'application/json',
+        Authorization: `Bearer ${token}`,
+    },
+    withCredentials: true,
+}
+
 const config = {
     headers: {
-        'Content-type': 'application/json'
+        'Content-type': 'application/json',
     }
 }
+
 
 export const createStory = (fdata) => async (dispatch) => {
     try {
         dispatch({ type: CREATE_STORY_REQUEST })
 
-        const { data } = await axios.post(`${backend}/api/story/create/`, fdata, config)
+        const { data } = await axios.post(`${backend}/api/story/create/`, fdata, Authconfig)
 
         dispatch({
             type: CREATE_STORY_SUCCESS,
@@ -71,8 +82,16 @@ export const createStory = (fdata) => async (dispatch) => {
 export const listStory = () => async (dispatch) => {
     try {
         dispatch({ type: LIST_STORY_REQUEST })
+        const token = localStorage.getItem('token') ? localStorage.getItem('token') : null;
+        const Authconfig = {
+            headers: {
+                'Content-type': 'application/json',
+                ...(token && { Authorization: `Bearer ${token}` }), 
+            },
+            withCredentials: true,
+        }
 
-        const { data } = await axios.get(`${backend}/api/story/list`, config)
+        const { data } = await axios.get(`${backend}/api/story/list`, Authconfig)
         dispatch({
             type: LIST_STORY_SUCCESS,
             payload: data
@@ -92,6 +111,7 @@ export const listStoryDetails = (storyid) => async (dispatch) => {
         dispatch({ type: READ_STORY_DETAILS_REQUEST })
 
         const { data } = await axios.get(`${backend}/api/story/${storyid}`, config)
+        
         dispatch({
             type: READ_STORY_DETAILS_SUCCESS,
             payload: data
@@ -106,11 +126,11 @@ export const listStoryDetails = (storyid) => async (dispatch) => {
     }
 }
 
-export const createChapter = (storyid,fdata) => async (dispatch) => {
+export const createChapter = (storyid, fdata) => async (dispatch) => {
     try {
         dispatch({ type: CREATE_CHAPTER_REQUEST })
 
-        const { data } = await axios.post(`${backend}/api/story/${storyid}/chapter/create/`, fdata, config)
+        const { data } = await axios.post(`${backend}/api/story/${storyid}/chapter/create/`, fdata, Authconfig)
         dispatch({
             type: CREATE_CHAPTER_SUCCESS,
             payload: data
@@ -129,7 +149,7 @@ export const listChapter = (storyid) => async (dispatch) => {
     try {
         dispatch({ type: LIST_CHAPTER_REQUEST })
 
-        const { data } = await axios.get(`${backend}/api/story/${storyid}/chapter/list`,  config)
+        const { data } = await axios.get(`${backend}/api/story/${storyid}/chapter/list`, config)
         dispatch({
             type: LIST_CHAPTER_SUCCESS,
             payload: data
@@ -144,7 +164,7 @@ export const listChapter = (storyid) => async (dispatch) => {
     }
 }
 
-export const readChapter = (storyid,chapterid) => async (dispatch) => {
+export const readChapter = (storyid, chapterid) => async (dispatch) => {
     try {
         dispatch({ type: READ_CHAPTER_REQUEST })
 
@@ -157,7 +177,7 @@ export const readChapter = (storyid,chapterid) => async (dispatch) => {
     }
     catch (err) {
         dispatch({
-            type:  READ_CHAPTER_ERROR,
+            type: READ_CHAPTER_ERROR,
             payload: err
         })
     }
@@ -168,7 +188,7 @@ export const listAdminStory = () => async (dispatch) => {
     try {
         dispatch({ type: LIST_ADMIN_STORY_REQUEST })
 
-        const { data } = await axios.get(`${backend}/api/admin/story/list`, config)
+        const { data } = await axios.get(`${backend}/api/admin/story/list`, Authconfig)
         dispatch({
             type: LIST_ADMIN_STORY_SUCCESS,
             payload: data
@@ -187,7 +207,7 @@ export const listAdminChapter = (id) => async (dispatch) => {
     try {
         dispatch({ type: LIST_ADMIN_CHAPTER_REQUEST })
 
-        const { data } = await axios.get(`${backend}/api/admin/story/${id}/chapter/list`, config)
+        const { data } = await axios.get(`${backend}/api/admin/story/${id}/chapter/list`, Authconfig)
         dispatch({
             type: LIST_ADMIN_CHAPTER_SUCCESS,
             payload: data
@@ -202,12 +222,12 @@ export const listAdminChapter = (id) => async (dispatch) => {
     }
 }
 
-export const updateChapter = (storyid,chapterid,fdata) => async (dispatch) => {
+export const updateChapter = (storyid, chapterid, fdata) => async (dispatch) => {
     try {
         console.log(fdata)
         dispatch({ type: UPDATE_CHAPTER_REQUEST })
 
-        const { data } = await axios.put(`${backend}/api/story/${storyid}/chapter/${chapterid}/update`, fdata, config)
+        const { data } = await axios.put(`${backend}/api/story/${storyid}/chapter/${chapterid}/update`, fdata, Authconfig)
         dispatch({
             type: UPDATE_CHAPTER_SUCCESS,
             payload: data
@@ -222,12 +242,12 @@ export const updateChapter = (storyid,chapterid,fdata) => async (dispatch) => {
     }
 }
 
-export const updateStory = (storyid,fdata) => async (dispatch) => {
+export const updateStory = (storyid, fdata) => async (dispatch) => {
     try {
         console.log(fdata)
         dispatch({ type: UPDATE_STORY_REQUEST })
 
-        const { data } = await axios.put(`${backend}/api/story/${storyid}/update`, fdata, config)
+        const { data } = await axios.put(`${backend}/api/story/${storyid}/update`, fdata, Authconfig)
         dispatch({
             type: UPDATE_STORY_SUCCESS,
             payload: data

@@ -1,11 +1,18 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { UploadImage } from '../../Helper/StoryHelp';
 import { createStory } from '../../Redux/Action/StoryAction';
 import Message from '../../Components/Message/Message';
 import Loader from '../../Components/Message/Loader';
+import { CREATE_STORY_RESET } from '../../Redux/Constant/StoryConstant';
+import { useNavigate } from 'react-router-dom';
+import BackButton from '../../Components/Element/BackButton';
+
 
 const CreateStory = ({ dispatch }) => {
+
+    const navigate = useNavigate()
+
     const CreateStory = useSelector(state => state.createStory);
     const { loading, error, success } = CreateStory;
 
@@ -40,10 +47,16 @@ const CreateStory = ({ dispatch }) => {
             image: iurl, // Image URL
         }));
 
+       
+    };
+
+    useEffect(()=>{
         if (success) {
             ResetAllInput();
+            dispatch({type:CREATE_STORY_RESET})
+            navigate('/')
         }
-    };
+    },[success])
 
     const ResetAllInput = () => {
         setFormData({
@@ -84,6 +97,7 @@ const CreateStory = ({ dispatch }) => {
 
     return (
         <form onSubmit={handleSubmit} className="form bg-white p-6 my-10 relative max-w-lg mx-auto shadow-lg rounded-lg">
+            <BackButton url={`/list-story`}/>
             <h3 className="text-2xl text-gray-900 font-semibold">Add your latest story!</h3>
             <p className="text-gray-600">Let me know what is in your mind</p>
 
@@ -131,7 +145,7 @@ const CreateStory = ({ dispatch }) => {
                 name="description"
                 cols={10}
                 rows={3}
-                maxLength={200}
+                maxLength={2000}
                 placeholder="Summarize your story"
                 className="border p-2 mt-3 w-full"
                 ref={desRef} // Referencing the description input

@@ -3,7 +3,7 @@ import {
   // useParams,
    Link } from 'react-router-dom';
 
-export default function DisplayChapter() {
+const DisplayChapter = () => {
 //  const { id } = useParams();
 
   return (
@@ -133,3 +133,6 @@ export default function DisplayChapter() {
     </div>
   );
 }
+
+
+export default DisplayChapter;

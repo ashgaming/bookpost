@@ -7,6 +7,7 @@ import Loader from '../../Components/Message/Loader';
 import Message from '../../Components/Message/Message';
 import LoaderModel from '../../Components/Message/LoaderModel';
 import { UPDATE_CHAPTER_RESET , READ_CHAPTER_RESET } from '../../Redux/Constant/StoryConstant';
+import BackButton from '../../Components/Element/BackButton';
 
 const EditChapter = ({ dispatch }) => {
     const { storyid, chapterid } = useParams();
@@ -120,6 +121,7 @@ const EditChapter = ({ dispatch }) => {
     return (
         <form onSubmit={handleSubmit} className="form bg-white p-6 my-10 relative max-w-lg mx-auto shadow-lg rounded-lg">
             {updateLoading && <LoaderModel />}
+            <BackButton url={`/list-story`}/>
             <h3 className="text-2xl text-gray-900 font-semibold">Edit Chapter</h3>
             <div className="flex space-x-5 mt-3">
                 <input
@@ -159,7 +161,7 @@ const EditChapter = ({ dispatch }) => {
                 placeholder="Write Chapter here"
                 className="border p-2 mt-3 w-full"
                 ref={chapterRef}
-                maxLength={200}
+                maxLength={5000}
             />
 
             <input

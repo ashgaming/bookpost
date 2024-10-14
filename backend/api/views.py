@@ -1,11 +1,12 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view , permission_classes
+from rest_framework.permissions import IsAuthenticated , IsAdminUser
 from rest_framework_simplejwt.views import TokenObtainPairView
-from api.serializer import MyTokenObtainPairSerializer , UserSerializersWithToken , StorySerializer , StoryListSerializer ,ChapterListSerializer , ChapterSerializer ,StoryListAdminSerializer ,ChapterListAdminSerializer
+from api.serializer import MyTokenObtainPairSerializer , UserSerializersWithToken , StorySerializer , StoryListSerializer ,ChapterListSerializer , ChapterSerializer ,StoryListAdminSerializer ,ChapterListAdminSerializer , ContactUsSerializer
 from django.contrib.auth.hashers import make_password
 from rest_framework import status
 from django.contrib.auth.models import User
-from .models import Story , Chapter , Review
+from .models import Story , Chapter , Review , ContactUs
 from datetime import datetime
 from django.db.models import Q 
 import os
@@ -14,7 +15,7 @@ from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from urllib.parse import quote , unquote
-
+#redis cache
 from django.core.cache import cache
 
 class MyTokenObtainPairView(TokenObtainPairView):
@@ -26,7 +27,7 @@ def registerUser(request):
     try:
         user = User.objects.create(
           #  first_name = data['name'],
-            username=data['email'],
+            username=data['username'],
             email=data['email'],
             password=make_password(data['password']),
             date_joined=datetime.now()
@@ -39,9 +40,16 @@ def registerUser(request):
 
 @api_view(['GET'])
 def userDetails(request,token):
+    auth_header = request.headers.get('Authorization')
+    
+    if not auth_header or not auth_header.startswith('Bearer '):
+        return Response({'error': 'Authorization token missing or invalid'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    token = auth_header.split(' ')[1]  # Extract the token after 'Bearer '
+    
     jwt_authenticator = JWTAuthentication()
     try:
-        # Extract the token and get the validated user
+        # Validate the token and get the corresponding user
         validated_token = jwt_authenticator.get_validated_token(token)
         user = jwt_authenticator.get_user(validated_token)
     except Exception as e:
@@ -57,34 +65,48 @@ def userDetails(request,token):
     return Response(user_details, status=status.HTTP_200_OK)
     
 
-#done
 @api_view(['GET'])
 def listStory(request):
-    try:
-        story = Story.objects.all()
-        serializer = StoryListSerializer(story,many=True)
-        print(serializer.data)
-        return Response(serializer.data)
-    except:
-        message = {'details':'User with this email already exists'}
-        return Response(message,status=status.HTTP_400_BAD_REQUEST)
+    if cache.get('storylist'):
+        print('list cache')
+        return Response(cache.get('storylist'))
+    else:
+        try:
+            print('list DB')
+            story = Story.objects.all()
+            serializer = StoryListSerializer(story,many=True)
+            cache.set('storylist',serializer.data,50)
+            return Response(serializer.data)
+        except:
+            message = {'details':'User with this email already exists'}
+            return Response(message,status=status.HTTP_400_BAD_REQUEST)
 
 #done
 @api_view(['GET'])
+#@permission_classes([IsAuthenticated])
 def storyDetails(request,storyid):
     data = request.data
-    try:
-        story = Story.objects.get(_id=storyid)
+    user = request.user
+    if cache.get(f'story{storyid}'):
+        # Check if story views are cached
+        trackViews(storyid)
+        # Return the cached story data
+        return Response(cache.get(f'story{storyid}'))
+    else:
+        try:
+            story = Story.objects.get(_id=storyid)
+            # Increment the views count
+            story.views += 1
+            story.save()  # Save the updated story object
 
-        # Increment the views count
-        story.views += 1
-        story.save()  # Save the updated story object
-
-        serializer = StorySerializer(story,many=False)
-        return Response(serializer.data)
-    except:
-        message = {'details':'User with this email already exists'}
-        return Response(message,status=status.HTTP_400_BAD_REQUEST)
+            serializer = StorySerializer(story,many=False)
+            cache.set(f'story{storyid}',serializer.data,1000)
+            
+            trackViews(storyid)
+            return Response(serializer.data)
+        except:
+            message = {'details':'User with this email already exists'}
+            return Response(message,status=status.HTTP_400_BAD_REQUEST)
 
 #done
 @api_view(['GET'])
@@ -130,13 +152,12 @@ def readChapter(request, storyid, chapterid):
     except Exception as e:
         return Response({'details': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
-#done
+
+@permission_classes([IsAdminUser])
 @api_view(['POST'])
 def createStory(request):
     data = request.data
 
-    print(data)
-    
     try:
         user = User.objects.get(id=1)
         story = Story.objects.create(
@@ -153,9 +174,9 @@ def createStory(request):
         return Response(message,status=status.HTTP_400_BAD_REQUEST)
     
 @api_view(['POST'])
+@permission_classes([IsAdminUser])
 def createChapter(request,storyid):
     data = request.data
-    print(data)
     try:
         user = User.objects.get(id=1)
         story = Story.objects.get(_id=storyid)
@@ -176,9 +197,9 @@ def createChapter(request,storyid):
         return Response(message,status=status.HTTP_400_BAD_REQUEST)
     
 @api_view(['PUT'])  # Using 'PUT' to update an existing chapter
+@permission_classes([IsAdminUser])
 def updateChapter(request, storyid, chapterid):
     data = request.data
-    print(data)
     try:
         # Fetch the user (you might want to replace this with the authenticated user)
         user = User.objects.get(id=1)  # Ideally replace this with authenticated user
@@ -223,29 +244,35 @@ def updateChapter(request, storyid, chapterid):
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 #done
+@permission_classes([IsAuthenticated,IsAdminUser])
 @api_view(['POST'])
 def uploadImage(request):
-    data = request.data
+
     image = request.FILES.get('image')
 
     if not image:
         return Response({"error": "No image provided"}, status=400)
 
-    # Sanitize the image name by replacing spaces and other characters
-    image_name = image.name.replace(' ', '_')  # Replacing spaces with underscores
-    image_path = os.path.join('images/', image_name)  # Adjust directory as needed
-    
-    # Save the image file
+    # Sanitize the image name by replacing spaces with underscores
+    image_name = image.name.replace(' ', '_')
+
+    # Define the image path relative to MEDIA_ROOT
+    image_path = os.path.join(settings.MEDIA_ROOT, image_name)  # 'backend/static/images/image_name'
+
+    # Save the image file in the 'static/images' folder
     path = default_storage.save(image_path, ContentFile(image.read()))
-    
-    # Construct the URL and encode it properly
-    image_url = os.path.join(settings.MEDIA_URL, path)
-    encoded_image_url = quote(image_url, safe=':/')  # Encode the URL
-    
+
+    # Construct the URL to access the image, which will be served from /images/
+    image_url = os.path.join(settings.MEDIA_URL, os.path.basename(path))  # '/images/image_name'
+
+    # Encode the URL for safe transmission
+    encoded_image_url = quote(image_url, safe=':/')
+
     return Response({"image_url": encoded_image_url})
 
 
 @api_view(['GET'])
+@permission_classes([IsAdminUser])
 def listAdminStory(request):
     try:
         story = Story.objects.all()
@@ -257,8 +284,8 @@ def listAdminStory(request):
 
 
 @api_view(['GET'])
+@permission_classes([IsAdminUser])
 def listAdminChapter(request, storyid):
-    print(storyid)
     try:
         # Try to get serialized chapters from cache
         if storyid==100: # cache.get('listAdminChapter'):
@@ -285,13 +312,12 @@ def listAdminChapter(request, storyid):
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         # General error handling
-        print(e)
         return Response({'details': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['PUT'])  # Using 'PUT' to update an existing chapter
-def updateStory(request, storyid, chapterid):
+@permission_classes([IsAdminUser])
+def updateStory(request, storyid):
     data = request.data
-    print(data)
     try:
         # Fetch the user (you might want to replace this with the authenticated user)
         user = User.objects.get(id=1)  # Ideally replace this with authenticated user
@@ -330,7 +356,28 @@ def updateStory(request, storyid, chapterid):
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['DELETE'])
+@permission_classes([IsAdminUser])
+def deleteChapter(request, chapter_id):
+    try:
+        chapter = Chapter.objects.get(_id=chapter_id)
+        chapter.delete()
+        return Response({'message': 'Chapter deleted successfully.'}, status=status.HTTP_204_NO_CONTENT)
+    except Chapter.DoesNotExist:
+        return Response({'error': 'Chapter not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['DELETE'])
+@permission_classes([IsAdminUser])
+def deleteStory(request, story_id):
+    try:
+        story = Story.objects.get(_id=story_id)
+        story.delete()  # This will also delete related chapters due to the CASCADE behavior
+        return Response({'message': 'Story and its chapters deleted successfully.'}, status=status.HTTP_204_NO_CONTENT)
+    except Story.DoesNotExist:
+        return Response({'error': 'Story not found.'}, status=status.HTTP_404_NOT_FOUND)
+    
 @api_view(['POST'])
+@permission_classes([IsAdminUser])
 def deleteImage(request):
     image_url = request.data.get('image_url')
 
@@ -352,3 +399,79 @@ def deleteImage(request):
         return Response({"message": "Image deleted successfully"})
     else:
         return Response({"error": "Image not found"}, status=404)
+
+@api_view(['GET'])
+def mostpopular(request):
+    if(cache.get('mostpop')):
+        print('cache')
+        return Response(cache.get('mostpop'), status=status.HTTP_200_OK)
+    else:
+        print('db')
+        try:
+            # Fetch the Story with the highest views using `order_by`
+            story = Story.objects.order_by('-views').first()
+            print('hit 1')
+            if story:
+                serializer = StorySerializer(story,many=False)
+
+                cache.set('mostpop',serializer.data,5000)
+
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response({"message": "No stories found."}, status=status.HTTP_404_NOT_FOUND)
+    
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def contactUs(request):
+    data = request.data
+    user = request.user
+
+    form = ContactUs.objects.create(
+        user=user,
+        name=data['name'],
+        email=data['email'],
+        phone=data['phone'],
+        message=data['message']
+    )
+         
+
+    return Response(status=status.HTTP_202_ACCEPTED)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def listContactUs(request):
+    data = request.data
+    user = request.user
+
+    form = ContactUs.objects.all()
+    serilizer = ContactUsSerializer(form,many=True)
+
+    return Response(serilizer.data,status=status.HTTP_202_ACCEPTED)
+#------------------------------------------------------------------------
+CACHE_TIMEOUT = 60 * 15  # 15 minutes or adjust accordingly
+
+def trackViews(storyid):
+    cache_key_views = f'story{storyid}views'
+    
+    # Check if story views are cached
+    if cache.get(cache_key_views):
+        # Increment views count in cache
+        current_views = cache.get(cache_key_views)
+        cache.set(cache_key_views, current_views + 1, timeout=CACHE_TIMEOUT)
+    else:
+        # If views are not cached, initialize it to 1
+        cache.set(cache_key_views, 2000, timeout=CACHE_TIMEOUT)
+
+    # Retrieve the story from the database
+    story = Story.objects.get(_id=storyid)
+    
+    # Before cache expires, update the views count in the database
+    if cache.ttl(cache_key_views) < CACHE_TIMEOUT / 2:  # Check if cache is close to expiring
+        story.views += cache.get(cache_key_views)  # Add cached views to the database
+        story.save()
+
+    
