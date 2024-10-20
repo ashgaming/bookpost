@@ -95,6 +95,7 @@ SIMPLE_JWT = {
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -223,7 +224,7 @@ MEDIA_URL = '/images/'
 
 STATICFILES_DIRS = [
    #  os.path.join(BASE_DIR, '..', 'frontend', 'build', 'static'), 
-    os.path.join(BASE_DIR,'build' ,'static'), 
+    os.path.join(BASE_DIR,'..','frontend','build' ,'static'), 
     BASE_DIR / 'static',
   
 ]
@@ -236,4 +237,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 APPEND_SLASH = False
-#STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
