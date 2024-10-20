@@ -20,11 +20,12 @@ const middleware = [thunk]
 
 /*
 const store = createStore(combineReducer, initialState,
-    composeWithDevTools(applyMiddleware(...middleware),
-    ))
-    */
-
+composeWithDevTools(applyMiddleware(...middleware),
+))
+*/
 const store = createStore(combineReducer, initialState,
     applyMiddleware(...middleware))
+    /*
+*/ 
 
 export default store

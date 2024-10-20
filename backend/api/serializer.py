@@ -4,7 +4,7 @@ from datetime import datetime
 from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import User
-from .models import Story , Chapter , Review , ContactUs
+from .models import Story , Chapter , Review , ContactUs , Events ,Announcements
  
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -135,5 +135,15 @@ class ChapterListAdminSerializer(serializers.ModelSerializer):
 class ContactUsSerializer(serializers.ModelSerializer):
      class Meta:
         model = ContactUs
+        fields = '__all__'
+
+class AnocementSerializer(serializers.ModelSerializer):
+     class Meta:
+        model = Announcements
+        fields = '__all__'
+
+class EventSerializer(serializers.ModelSerializer):
+     class Meta:
+        model = Events
         fields = '__all__'
 

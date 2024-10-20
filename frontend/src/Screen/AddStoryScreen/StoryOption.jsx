@@ -39,10 +39,10 @@ const StoryOption = () => {
                     </div>
                 </div>
             </Link>
-            <Link to="/" >
+            <Link to="/create/annoucemnt" >
                 <div className="each flex hover:shadow-lg select-none p-10 rounded-md border-gray-300 border mb-3 hover:border-gray-500 cursor-pointer">
                     <div className="left">
-                        <div className="header text-blue-600 font-semibold text-2xl">Edit Profile</div>
+                        <div className="header text-blue-600 font-semibold text-2xl">Manage Events</div>
                         <div className="desc text-gray-600">this is basically used for web based front end designing</div>
                     </div>
                     <div className="right m-auto mr-0">

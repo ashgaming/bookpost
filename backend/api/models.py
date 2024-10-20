@@ -65,3 +65,38 @@ class ContactUs(models.Model):
 
     def __str__(self):
         return self.name or "Unnamed Contact"
+
+
+class Announcements(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    chapter = models.ForeignKey(Chapter, on_delete=models.SET_NULL, null=True, blank=True)
+    story = models.ForeignKey(Story, on_delete=models.SET_NULL, null=True, blank=True)
+    event = models.TextField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)  # Field to store creation time
+    event_at = models.DateTimeField(null=True, blank=True)  # Field to store event time
+    expire_at = models.DateTimeField(null=True, blank=True)  # Field to store expiration time
+    link = models.URLField(default='', max_length=200)
+    has_done = models.BooleanField(default=False)
+    cover = models.ImageField(max_length=300, null=True, blank=True, default='https://tse4.mm.bing.net/th?id=OIP.JKlsbvPessjEUEWMzvpiigAAAA&pid=Api&P=0&h=180')
+    
+    _id = models.AutoField(primary_key=True, editable=False)
+
+    def __str__(self):
+        return self.event or "Unnamed Announcement"
+
+class Events(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    chapter = models.ForeignKey(Chapter, on_delete=models.SET_NULL, null=True, blank=True)
+    story = models.ForeignKey(Story, on_delete=models.SET_NULL, null=True, blank=True)
+    event = models.TextField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)  # Field to store creation time
+    event_at = models.DateTimeField(null=True, blank=True)  # Field to store event time
+    expire_at = models.DateTimeField(null=True, blank=True)  # Field to store expiration time
+    link = models.URLField(default='', max_length=200)
+    has_done = models.BooleanField(default=False)
+    cover = models.ImageField(max_length=300, null=True, blank=True, default='https://tse4.mm.bing.net/th?id=OIP.JKlsbvPessjEUEWMzvpiigAAAA&pid=Api&P=0&h=180')
+    
+    _id = models.AutoField(primary_key=True, editable=False)
+
+    def __str__(self):
+        return self.event or "Unnamed Announcement"

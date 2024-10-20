@@ -15,7 +15,8 @@ const ListBook = () => {
             dispatch(listStory());
         }
     }, [Books])
-
+   // console.log(Books?.length)
+  //  console.log(Books?.length <= 1)
 
     return (
         <>
@@ -24,8 +25,9 @@ const ListBook = () => {
             {loading && <Loader />}
             {error && <Message>{error}</Message>}
             <div className="container mx-auto p-4 lg:h-auto flex items-center justify-center">
+                    {Books?.length <= 1 && <h1>{`No books available ...!`}</h1>}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-
+           
                     {
                         Books && Books.map((book, index) => (
 
@@ -33,10 +35,6 @@ const ListBook = () => {
 
                         ))
                     }
-
-                    {!Books && <Message>No books available ...!</Message>}
-
-
 
                 </div>
             </div>

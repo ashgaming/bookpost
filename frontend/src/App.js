@@ -1,11 +1,12 @@
 import './App.css';
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 // Screens
 import Header from './Components/Header/Header';
 import Loader from './Components/Message/Loader';
+import ContentSettings from './Helper/ContentSettings';
 
 // Lazy load components
 const HomeScreen = React.lazy(() => import('./Screen/HomeScreen'));
@@ -24,6 +25,7 @@ const ListStoriesScreen = React.lazy(() => import('./Screen/AddStoryScreen/ListS
 const ListChapterScreen = React.lazy(() => import('./Screen/AddStoryScreen/ListChapterScreen'));
 const EditChapter = React.lazy(() => import('./Screen/AddStoryScreen/EditChapter'));
 const EditStoryScreen = React.lazy(() => import('./Screen/AddStoryScreen/EditStoryScreen'));
+const createAnocementScreen = React.lazy(() => import('./Screen/AddEvent/createAnocementScreen'));
 
 // Layout component to handle Header visibility
 function Layout({ children }) {
@@ -43,7 +45,11 @@ function Layout({ children }) {
 
 function App() {
   const dispatch = useDispatch();
-  
+
+
+  ContentSettings();
+
+
   const authRoutes = [
     { path: '/', component: HomeScreen },
     { path: '/login', component: LoginScreen },
@@ -63,10 +69,11 @@ function App() {
     { path: '/add/story/:storyid', component: ListChapterScreen },
     { path: '/add/story/:storyid/add', component: AddChapterScreen },
     { path: '/add/story/:storyid/chapter/:chapterid/edit', component: EditChapter },
+    { path: '/create/annoucemnt', component: createAnocementScreen },
   ];
 
   return (
-    <div className="App bg-slate-50">
+    <div className="App bg-slate-50" style={{ userSelect: 'none' }}>
       <Router>
         <Layout>
           <Routes>

@@ -20,6 +20,7 @@ import {
 
 
 } from './Reducer/StoryReducer'
+import { getAnoucementReducer, getLatestEventReducer } from './Reducer/EventReducer'
 
 export const combineReducer = combineReducers( {
     userLogin: userLoginReducer,
@@ -39,4 +40,8 @@ export const combineReducer = combineReducers( {
 
     updateChapter:updateChapterReducer,
     updateStory:updateStoryReducer,
+
+
+    getLatestEvent:getLatestEventReducer,
+    getAnnoucements:getAnoucementReducer,
 })
