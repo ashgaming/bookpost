@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 import dj_database_url
 import os
 
+import cloudinary
+
 from datetime import timedelta
 
 load_dotenv()
@@ -240,3 +242,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 APPEND_SLASH = False
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Configuration cloudinary for image storage    
+cloudinary.config( 
+    cloud_name = os.environ.get('cloud_name'), 
+    api_key = os.environ.get('api_key'), 
+    api_secret = os.environ.get('api_secret'),
+    secure=True
+)

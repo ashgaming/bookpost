@@ -18,6 +18,9 @@ from urllib.parse import quote , unquote
 #redis cache
 from django.core.cache import cache
 
+#clodinary
+import cloudinary.uploader
+
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
@@ -256,19 +259,31 @@ def uploadImage(request):
     # Sanitize the image name by replacing spaces with underscores
     image_name = image.name.replace(' ', '_')
 
-    # Define the image path relative to MEDIA_ROOT
-    image_path = os.path.join(settings.MEDIA_ROOT, image_name)  # 'backend/static/images/image_name'
 
-    # Save the image file in the 'static/images' folder
-    path = default_storage.save(image_path, ContentFile(image.read()))
+#    # Define the image path relative to MEDIA_ROOT
+#    image_path = os.path.join(settings.MEDIA_ROOT, image_name)  # 'backend/static/images/image_name'
+#
+#    # Save the image file in the 'static/images' folder
+#    path = default_storage.save(image_path, ContentFile(image.read()))
+#
+#    # Construct the URL to access the image, which will be served from /images/
+#    image_url = os.path.join(settings.MEDIA_URL, os.path.basename(path))  # '/images/image_name'
+#
+#    # Encode the URL for safe transmission
+#    encoded_image_url = quote(image_url, safe=':/')
 
-    # Construct the URL to access the image, which will be served from /images/
-    image_url = os.path.join(settings.MEDIA_URL, os.path.basename(path))  # '/images/image_name'
 
-    # Encode the URL for safe transmission
-    encoded_image_url = quote(image_url, safe=':/')
+    try:
+        # Upload the image to Cloudinary
+        upload_result = cloudinary.uploader.upload(image, public_id=image_name)
 
-    return Response({"image_url": encoded_image_url})
+        # Return the URL of the uploaded image
+        return Response({"image_url": upload_result["secure_url"]}, status=201)
+
+    except Exception as e:
+        # Handle any exceptions that may occur during upload
+        return Response({"error": str(e)}, status=500)
+    
 
 
 @api_view(['GET'])
