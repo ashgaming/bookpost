@@ -19,6 +19,7 @@ export const UploadImage = async (file) => {
 
     try {
         const response = await axios.post(`${backend}/api/upload-image/`, formData, config);
+
         console.log(response.data)
         return response.data.image_url;
     } catch (err) {
