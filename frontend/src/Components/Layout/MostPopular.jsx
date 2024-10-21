@@ -4,6 +4,8 @@ import { backend } from '../../Connection/conn';
 import Message from '../Message/Message';
 import Loader from '../Message/Loader';
 import { Link } from 'react-router-dom';
+import { handleImageError } from '../../Helper/ImageUrlCorrect';
+
 
 const MostPopular = () => {
     const [book, setBook] = useState({});
@@ -16,9 +18,9 @@ const MostPopular = () => {
             if (!hasLoadedRef.current) { // Check if data has been loaded
                 setLoading(true);
                 try {
-                    console.log('Fetching data...');
                     const { data } = await axios.get(`${backend}/api/mostpopular`);
                     setBook(data);
+                    sessionStorage.setItem('popbook', JSON.stringify(data));
                     hasLoadedRef.current = true; // Mark as loaded
                 } catch (error) {
                     setError(error.message || 'Failed to fetch books');
@@ -27,15 +29,17 @@ const MostPopular = () => {
                 }
             }
         };
-
-        fetchBooks();
+        if(sessionStorage.getItem('popbook')){
+            setBook(JSON.parse(sessionStorage.getItem('popbook')));
+        }else{
+            fetchBooks();
+        }
     }, []);
 
     if (loading) return <Loader />; // Display loader while loading
 
     return (
         <section>
-            {console.log('book', book)}
             {error ? (
                 <Message>{error}</Message>
             ) : (
@@ -45,6 +49,7 @@ const MostPopular = () => {
                             <img
                                 alt=""
                                 src={book.cover}
+                                onError={(e)=>handleImageError(e)}
                                 className="absolute inset-0 h-full w-full object-cover"
                             />
                         </div>

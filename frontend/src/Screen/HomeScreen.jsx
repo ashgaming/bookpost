@@ -37,13 +37,8 @@ const HomeScreen = () => {
                 <Intro />
             </Suspense>
             <Suspense fallback={<div>Loading...</div>}>
-                {isLoaded ? (
                     <MostPopular />
-                ) : (
-                    <MostPopular onLoad={handleLoad} />
-                )}
             </Suspense>
-             * 
             {/**
             <Suspense fallback={<div>Loading...</div>}>
                 <Annoucements />

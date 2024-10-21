@@ -9,11 +9,16 @@ import Message from "../../Components/Message/Message";
 const ListStoriesScreen = ({ dispatch }) => {
     const adminstory = useSelector(state => state.listAdminStory)
     const {
-         loading, error, 
-        story } = adminstory
+         loading, 
+         error, 
+        story,
+        page,
+        pages
+    
+    } = adminstory
+    
     useEffect(() => {
-        dispatch(listAdminStory());
-        console.log('hit')
+        dispatch(listAdminStory(page));
     }, [dispatch])
 
     const navigate = useNavigate()
@@ -27,7 +32,7 @@ const ListStoriesScreen = ({ dispatch }) => {
 
     const PressHandler = (e, id) => {
         e.preventDefault();
-        navigate(`/add/story/${id}`);
+        navigate(`/list-story`,{ replace: true });
     }
     if(loading) return <Loader />;
     if(error) return <Message>{error}</Message>;

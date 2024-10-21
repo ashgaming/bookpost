@@ -184,11 +184,11 @@ export const readChapter = (storyid, chapterid) => async (dispatch) => {
 }
 
 
-export const listAdminStory = () => async (dispatch) => {
+export const listAdminStory = (page=1) => async (dispatch) => {
     try {
         dispatch({ type: LIST_ADMIN_STORY_REQUEST })
 
-        const { data } = await axios.get(`${backend}/api/admin/story/list`, Authconfig)
+        const { data } = await axios.get(`${backend}/api/admin/story/list${page ? `?page=${page}` : ''}`, Authconfig)
         dispatch({
             type: LIST_ADMIN_STORY_SUCCESS,
             payload: data

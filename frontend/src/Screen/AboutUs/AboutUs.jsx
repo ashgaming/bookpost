@@ -23,90 +23,90 @@ const AboutUs = () => {
         const email = emailRef.current?.value;
         const phone = phoneRef.current?.value;
         const message = messageRef.current?.value;
-      
+
         // Check if the name is not empty
         if (!name) {
-          alert("Name is required");
-          nameRef.current?.focus();  // Focus on the name field
-          return false;
+            alert("Name is required");
+            nameRef.current?.focus();  // Focus on the name field
+            return false;
         }
-      
+
         // Check if the email is not empty and in valid format
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!email) {
-          alert("Email is required");
-          emailRef.current?.focus();  // Focus on the email field
-          return false;
+            alert("Email is required");
+            emailRef.current?.focus();  // Focus on the email field
+            return false;
         } else if (!emailPattern.test(email)) {
-          alert("Please enter a valid email address");
-          emailRef.current?.focus();  // Focus on the email field
-          return false;
+            alert("Please enter a valid email address");
+            emailRef.current?.focus();  // Focus on the email field
+            return false;
         }
-      
+
         // Check if the phone number is not empty and valid (e.g., only digits and 10 digits long)
         const phonePattern = /^[0-9]{10}$/;
         if (!phone) {
-          alert("Phone number is required");
-          phoneRef.current?.focus();  // Focus on the phone field
-          return false;
+            alert("Phone number is required");
+            phoneRef.current?.focus();  // Focus on the phone field
+            return false;
         } else if (!phonePattern.test(phone)) {
-          alert("Please enter a valid 10-digit phone number");
-          phoneRef.current?.focus();  // Focus on the phone field
-          return false;
+            alert("Please enter a valid 10-digit phone number");
+            phoneRef.current?.focus();  // Focus on the phone field
+            return false;
         }
-      
+
         // Check if the message is not empty
         if (!message) {
-          alert("Message is required");
-          messageRef.current?.focus();  // Focus on the message field
-          return false;
+            alert("Message is required");
+            messageRef.current?.focus();  // Focus on the message field
+            return false;
         }
-      
+
         // If all validations pass
         return true;
-      };
-      
+    };
+
 
     const submitHandler = async (e) => {
         e.preventDefault();
 
-        if(validateForm()){
+        if (validateForm()) {
 
             setLoading(true);
             setError(null);
-            
+
             const formData = {
                 name: nameRef.current?.value || '',
-            email: emailRef.current?.value || '',
-            phone: phoneRef.current?.value || '',
-            message: messageRef.current?.value || '',
-        };
-        try {
-        const token = localStorage.getItem('token')
-        const Authconfig = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${token}`,
-            },
-            withCredentials: true,
+                email: emailRef.current?.value || '',
+                phone: phoneRef.current?.value || '',
+                message: messageRef.current?.value || '',
+            };
+            try {
+                const token = localStorage.getItem('token')
+                const Authconfig = {
+                    headers: {
+                        'Content-type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    withCredentials: true,
+                }
+
+
+                const { data } = await axios.post(`${backend}/api/contactUs`, formData, Authconfig);
+                alert('Your form has been submitted successfully!');
+                // Clear form fields
+                nameRef.current.value = '';
+                emailRef.current.value = '';
+                phoneRef.current.value = '';
+                messageRef.current.value = '';
+            } catch (error) {
+                setError('Error submitting form. Please try again later.');
+            } finally {
+                setLoading(false);
+            }
+        } else {
+            return
         }
-        
-        
-            const { data } = await axios.post(`${backend}/api/contactUs`, formData , Authconfig);
-            alert('Your form has been submitted successfully!');
-            // Clear form fields
-            nameRef.current.value = '';
-            emailRef.current.value = '';
-            phoneRef.current.value = '';
-            messageRef.current.value = '';
-        } catch (error) {
-            setError('Error submitting form. Please try again later.');
-        } finally {
-            setLoading(false);
-        }
-    }else{
-        return
-    }
     };
 
     return (
@@ -202,14 +202,14 @@ const AboutUs = () => {
                                             </Link>.
                                         </p>
                                     </label>
-                                    </div>
-                                    
-                                    <button 
-                                    className="align-middle select-none font-sans font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg bg-customOrange text-white shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none block w-full mt-6" 
+                                </div>
+
+                                <button
+                                    className="align-middle select-none font-sans font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg bg-customOrange text-white shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none block w-full mt-6"
                                     type="button"
-                                    onClick={(e)=>submitHandler(e)}>
-                                        Contact Us
-                                    </button>
+                                    onClick={(e) => submitHandler(e)}>
+                                    Contact Us
+                                </button>
                             </form>
                         </div>
                     </div>

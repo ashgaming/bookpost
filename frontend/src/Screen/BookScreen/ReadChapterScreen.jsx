@@ -6,7 +6,6 @@ import { readChapter } from '../../Redux/Action/StoryAction';
 import { useSelector } from 'react-redux';
 import Loader from '../../Components/Message/Loader';
 import Message from '../../Components/Message/Message';
-import { backend } from '../../Connection/conn';
 
 const ReadChapterScreen = ({ dispatch }) => {
   const { chapterid, storyid } = useParams();

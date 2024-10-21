@@ -88,21 +88,31 @@ export const verifyUser = (token) => async (dispatch, getState) => {
     try {
         dispatch({ type: USER_DETAILS_REQUEST })
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization:`Bearer ${token}`
+        if (sessionStorage.getItem('user')) {
+            dispatch({
+                type: USER_DETAILS_SUCCESS,
+                payload: JSON.parse(sessionStorage.getItem('user'))
+            })
+        } else {
+            const config = {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                }
             }
+
+            const { data } = await axios.get(`${backend}/api/user/details/${token}`, config)
+
+            dispatch({
+                type: USER_DETAILS_SUCCESS,
+                payload: data
+            })
+
+            sessionStorage.setItem('user', JSON.stringify(data))
+
         }
 
-        console.log(token)
 
-        const { data } = await axios.get(`${backend}/api/user/details/${token}`, config)
-
-        dispatch({
-            type: USER_DETAILS_SUCCESS,
-            payload: data
-        })
 
     }
     catch (err) {
