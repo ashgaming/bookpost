@@ -2,11 +2,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { UploadImage } from '../../Helper/StoryHelp';
-import { listStoryDetails,updateStory } from '../../Redux/Action/StoryAction';
+import { listStoryDetails, updateStory } from '../../Redux/Action/StoryAction';
 import Loader from '../../Components/Message/Loader';
 import Message from '../../Components/Message/Message';
 import LoaderModel from '../../Components/Message/LoaderModel';
-import { UPDATE_CHAPTER_RESET , READ_CHAPTER_RESET, UPDATE_STORY_RESET } from '../../Redux/Constant/StoryConstant';
+import { READ_CHAPTER_RESET, UPDATE_STORY_RESET } from '../../Redux/Constant/StoryConstant';
 import BackButton from '../../Components/Element/BackButton';
 
 const EditStoryScreen = ({ dispatch }) => {
@@ -18,22 +18,23 @@ const EditStoryScreen = ({ dispatch }) => {
     const readStory = useSelector(state => state.readStory);
     const { loading, error, book } = readStory;
 
-    console.log('readStory',readStory)
-
     const updateStoryState = useSelector(state => state.updateStory);
     const { loading: updateLoading,
-        // error: updateError,
+        error: updateError,
         success } = updateStoryState;
 
     // Form fields refs
     const titleRef = useRef(null);
-    const chapterRef = useRef(null);
     const summaryRef = useRef(null);
     const catRef = useRef(null);
+
+
 
     const navigate = useNavigate();
 
     const [oldForm, setOldForm] = useState({})
+    const [imgUploading, setImgUploading] = useState(false)
+    const [imgUpError, setImgUpError] = useState(null)
 
 
     // Step 1: Fetch story if not already loaded or chapterid doesn't match
@@ -42,7 +43,7 @@ const EditStoryScreen = ({ dispatch }) => {
             dispatch(listStoryDetails(storyid));
         }
 
-
+        console.log(book)
         const initializeForm = async () => {
             if (book && book?._id == storyid && !isFormInitialized) {
                 titleRef.current.value = book.name || '';
@@ -62,11 +63,10 @@ const EditStoryScreen = ({ dispatch }) => {
                 summary: summaryRef.current.value,
                 cover: book.cover,
             })
+            setImage(book.cover)
         }
 
-
-         
-    }, [dispatch, storyid,isFormInitialized,book]);
+    }, [dispatch, storyid, isFormInitialized, book]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -84,12 +84,10 @@ const EditStoryScreen = ({ dispatch }) => {
             formData.summary = summaryRef.current.value; // Add summary if it has changed
         }
         if (image !== oldForm.cover) {
-            console.log('image',image)
-            console.log('old img',oldForm.image)
+            console.log('image', image)
+            console.log('old img', oldForm.image)
             formData.cover = image; // Add cover if it has changed
         }
-
-      
 
         dispatch(updateStory(storyid, formData));
 
@@ -98,8 +96,8 @@ const EditStoryScreen = ({ dispatch }) => {
 
     useEffect(() => {
         if (success) {
-            alert('Chapter Updated ...')
-            navigate(`/add/story/${storyid}`);
+            alert('Story Updated ...')
+            navigate(`/list-story`, { replace: true });
             dispatch({ type: UPDATE_STORY_RESET })
             dispatch({ type: READ_CHAPTER_RESET })
         }
@@ -107,26 +105,31 @@ const EditStoryScreen = ({ dispatch }) => {
 
     const uploadImage = async (e) => {
         e.preventDefault();
+
+        setImgUploading(true);
         const file = e.target.files[0];
         if (file) {
             try {
                 const uploadedUrl = await UploadImage(file);
                 setImage(uploadedUrl);
             } catch (error) {
-                console.error("Image upload failed", error);
+                setImgUpError(error);
             }
         }
+
+        setImgUploading(false)
     };
 
-    // Step 3: Rendering based on loading/error state
     if (loading) return <Loader />;
     if (error) return <Message>{error}</Message>;
     if (!book?._id) return null;
     return (
         <form onSubmit={handleSubmit} className="form bg-white p-6 my-10 relative max-w-lg mx-auto shadow-lg rounded-lg">
-            <BackButton url={`/list-story`}/>
-            { updateLoading && <LoaderModel />}
-            <h3 className="text-2xl text-gray-900 font-semibold">Edit Chapter</h3>
+            <BackButton url={`/list-story`} />
+            {updateLoading && <LoaderModel />}
+
+            <h3 className="text-2xl text-gray-900 font-semibold">Edit Story</h3>
+            {updateError && <Message>{updateError}</Message>}
             <div className="flex space-x-5 mt-3">
                 <input
                     type="text"
@@ -153,6 +156,8 @@ const EditStoryScreen = ({ dispatch }) => {
                 />
             </div>
 
+            {imgUploading && <Loader />}
+            {imgUpError && <Message>{imgUpError}</Message>}
             <div className="flex space-x-5 mt-3">
                 <input
                     type="file"
@@ -170,7 +175,7 @@ const EditStoryScreen = ({ dispatch }) => {
                 maxLength={2000}
             />
 
-         
+
             <input
                 type="submit"
                 value="Update Story"

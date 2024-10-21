@@ -244,7 +244,6 @@ export const updateChapter = (storyid, chapterid, fdata) => async (dispatch) => 
 
 export const updateStory = (storyid, fdata) => async (dispatch) => {
     try {
-        console.log(fdata)
         dispatch({ type: UPDATE_STORY_REQUEST })
 
         const { data } = await axios.put(`${backend}/api/story/${storyid}/update`, fdata, Authconfig)

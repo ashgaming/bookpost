@@ -15,18 +15,12 @@ export const UploadImage = async (file) => {
         },
         withCredentials: true,
     };
-    
+
 
     try {
         const response = await axios.post(`${backend}/api/upload-image/`, formData, config);
-
-        if (response.status === 200) {
-            const uploadedImageUrl = `${backend}` + response.data.image_url;
-            alert('Image uploaded successfully');
-            return uploadedImageUrl;
-        } else {
-            alert('Failed to upload image');
-        }
+        console.log(response.data)
+        return response.data.image_url;
     } catch (err) {
         alert('Error uploading image:', err);
         throw new Error('Image upload failed');

@@ -343,7 +343,9 @@ export const listAdminStoryReducer = (state = {
                 ...state,
                 loading: false,
                 error: false,
-                story: action.payload,
+                story: action.payload.Books,
+                page: action.payload.page,
+                pages: action.payload.pages,
             }
 
 
@@ -379,7 +381,9 @@ export const listAdminChapterReducer = (state = {
                 ...state,
                 loading: false,
                 error: false,
-                chapters: action.payload,
+                chapters: action.payload.chapters,
+                page:action.payload.page,
+                pages:action.payload.pages
             }
 
         case LIST_ADMIN_CHAPTER_ERROR:

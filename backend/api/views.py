@@ -15,11 +15,16 @@ from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from urllib.parse import quote , unquote
+from django.db.utils import DatabaseError
+
 #redis cache
 from django.core.cache import cache
 
 #clodinary
 import cloudinary.uploader
+
+#pagination
+from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
@@ -278,7 +283,7 @@ def uploadImage(request):
         upload_result = cloudinary.uploader.upload(image, public_id=image_name)
 
         # Return the URL of the uploaded image
-        return Response({"image_url": upload_result["secure_url"]}, status=201)
+        return Response({"image_url": upload_result["secure_url"]}, status=status.HTTP_200_OK)
 
     except Exception as e:
         # Handle any exceptions that may occur during upload
@@ -290,44 +295,104 @@ def uploadImage(request):
 @permission_classes([IsAdminUser])
 def listAdminStory(request):
     try:
+        # Filter and optimize the query as needed (e.g., select related fields)
         story = Story.objects.all()
-        serializer = StoryListAdminSerializer(story,many=True)
-        return Response(serializer.data)
-    except:
-        message = {'details':'User with this email already exists'}
-        return Response(message,status=status.HTTP_400_BAD_REQUEST)
+       # story = Story.objects.select_related('related_model').filter(status='published').only('id', 'title', 'related_model').all()
+
+        # Get the page number from query parameters (defaults to page 1)
+        page = request.query_params.get('page', 1)
+        
+        # Initialize paginator with 12 items per page
+        paginator = Paginator(story, 12)
+
+        try:
+            # Get the requested page
+            story = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver the first page
+            story = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range, deliver the last page
+            story = paginator.page(paginator.num_pages)
+
+        # Serialize the paginated stories
+        serializer = StoryListAdminSerializer(story, many=True)
+
+        # Return the paginated response
+        return Response({
+            'Books': serializer.data,
+            'page': int(page),
+            'pages': paginator.num_pages
+        })
+
+    # Specific error handling for database-related errors
+    except DatabaseError as db_error:
+        message = {'details': 'Database error: ' + str(db_error)}
+        return Response(message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    # Handling invalid integer type for 'page' parameter
+    except ValueError as ve:
+        message = {'details': 'Invalid page number: ' + str(ve)}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+    # Catch any other unforeseen errors
+    except Exception as e:
+        message = {'details': 'An error occurred: ' + str(e)}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
 def listAdminChapter(request, storyid):
     try:
-        # Try to get serialized chapters from cache
-        if storyid==100: # cache.get('listAdminChapter'):
-            chapters = cache.get('listAdminChapter')
-            print('db: ', 'cache')
+        # Get the page number from query parameters (default to 1 if not provided)
+        page = request.query_params.get('page', 1)
+
+        # Try to get cached chapters based on storyid and page
+        cache_key = f'listAdminChapter_{storyid}_page_{page}'
+        chapters = cache.get(cache_key)
+        
+        if chapters:  
+            print('db: cache')  # Retrieved from cache
         else:
-            # Fetch all chapters associated with the story ID
-            chapters = Chapter.objects.filter(story=storyid)
+            # Fetch all chapters associated with the story ID and optimize query
+            chapters_queryset = Chapter.objects.filter(story_id=storyid).select_related('related_field').all()
             
-            if chapters.exists():  # Check if chapters are found
-                # Serialize the chapters and cache the serialized data
-                chapters = ChapterListAdminSerializer(chapters, many=True).data
-               # cache.set('listAdminChapter', chapters, timeout=25)
-                print('db: ', 'pg')
+            if chapters_queryset.exists():  # Check if chapters exist for the story
+                # Paginate the queryset (12 chapters per page, for example)
+                paginator = Paginator(chapters_queryset, 12)
+                
+                try:
+                    chapters = paginator.page(page)
+                except PageNotAnInteger:
+                    chapters = paginator.page(1)
+                except EmptyPage:
+                    chapters = paginator.page(paginator.num_pages)
+
+                # Serialize the paginated chapters
+                serialized_chapters = ChapterListAdminSerializer(chapters, many=True).data
+                
+                # Cache the serialized data for this page
+                cache.set(cache_key, serialized_chapters, timeout=60)  # Cache for 60 seconds
+                
+                print('db: pg')  # Fetched from the database
             else:
                 message = {'message': 'No chapters available for this story'}
                 return Response(message, status=status.HTTP_204_NO_CONTENT)
-        
-        # Return the cached or newly fetched serialized chapters
-        return Response(chapters, status=status.HTTP_200_OK)
-    
+
+        # Return paginated data along with pagination metadata
+        return Response({
+            'chapters': serialized_chapters,
+            'page': int(page),
+            'pages': paginator.num_pages
+        }, status=status.HTTP_200_OK)
+
     except Chapter.DoesNotExist:
         message = {'details': 'Story not found or invalid story ID'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
-        # General error handling
         return Response({'details': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 @api_view(['PUT'])  # Using 'PUT' to update an existing chapter
 @permission_classes([IsAdminUser])
