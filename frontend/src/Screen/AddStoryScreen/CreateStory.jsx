@@ -47,16 +47,16 @@ const CreateStory = ({ dispatch }) => {
             image: iurl, // Image URL
         }));
 
-       
+
     };
 
-    useEffect(()=>{
+    useEffect(() => {
         if (success) {
             ResetAllInput();
-            dispatch({type:CREATE_STORY_RESET})
+            dispatch({ type: CREATE_STORY_RESET })
             navigate('/')
         }
-    },[success])
+    }, [success])
 
     const ResetAllInput = () => {
         setFormData({
@@ -97,7 +97,7 @@ const CreateStory = ({ dispatch }) => {
 
     return (
         <form onSubmit={handleSubmit} className="form bg-white p-6 my-10 relative max-w-lg mx-auto shadow-lg rounded-lg">
-            <BackButton url={`/list-story`}/>
+            <BackButton url={`/list-story`} />
             <h3 className="text-2xl text-gray-900 font-semibold">Add your latest story!</h3>
             <p className="text-gray-600">Let me know what is in your mind</p>
 
@@ -118,13 +118,30 @@ const CreateStory = ({ dispatch }) => {
                     ref={titleRef} // Referencing the title input
                 />
 
-                <input
-                    type="text"
+                <select
                     name="category"
-                    placeholder="Story Category"
-                    className="border p-2 w-1/2"
                     ref={catRef} // Referencing the title input
-                />
+                    className="border p-2 rounded-md">
+                    <option value="Fantasy">Fantasy</option>
+                    <option value="Adventure">Adventure</option>
+                    <option value="Fairy Tale">Fairy Tales</option>
+                    <option value="Mystery">Mystery</option>
+                    <option value="Science Fiction">Science Fiction</option>
+                    <option value="Historical Fiction">Historical Fiction</option>
+                    <option value="Horror">Horror</option>
+                    <option value="Romance">Romance</option>
+                    <option value="Rom-Com">Rom-Com</option>
+                    <option value="Drama">Drama</option>
+                    <option value="Thriller">Thriller</option>
+                    <option value="Non Fiction">Non-Fiction</option>
+                    <option value="Biography">Biography</option>
+                    <option value="Comedy">Comedy</option>
+                    <option value="Classic">Classic</option>
+                    <option value="Young Adult">Young Adult</option>
+                    <option value="Children">Children's</option>
+                    <option value="Graphic Novel">Graphic Novel</option>
+                </select>
+
             </div>
 
             <div className='py-5'>

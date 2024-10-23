@@ -35,8 +35,7 @@ export default function Header() {
     return (
         <header>
             <nav 
-            style={styles}
-            className="font-sans flex flex-col sm:flex-row justify-between items-center py-2 px-6 shadow w-full overflow-x-hidden">
+            className="font-sans flex flex-col bg-navPink sm:flex-row justify-between items-center py-2 px-6 shadow w-full overflow-x-hidden">
                 <div className="mb-2 sm:mb-0 text-center sm:text-left">
                     <Link to="/" className="text-2xl no-underline text-grey-darkest hover:text-blue-dark font-bold">Falicia Celestia</Link>
                     <br />
@@ -79,8 +78,4 @@ export default function Header() {
             </nav>
         </header>
     );
-}
-
-const styles = {
-    backgroundColor:"#EC9027"
 }

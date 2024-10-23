@@ -1,6 +1,10 @@
 import React, { Suspense, useEffect, useState } from 'react';
 import Courosel from '../Components/Courosel/Courosel';
 import Footer from '../Components/Footer/Footer';
+import Loader from '../Components/Message/Loader';
+import ConfirmDelete from '../Components/Message/ConfirmDelete';
+
+
 const MostPopular = React.lazy(() => import('../Components/Layout/MostPopular'));
 const ListBook = React.lazy(() => import('../Components/Layout/ListBook'));
 const Intro = React.lazy(() => import('../Components/Layout/Intro'));
@@ -33,12 +37,13 @@ const HomeScreen = () => {
     return (
         <main className='w-full relative overflow-x-hidden'>
             <Courosel />
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<Loader/>}>
                 <Intro />
             </Suspense>
-            <Suspense fallback={<div>Loading...</div>}>
-                    <MostPopular />
+            <Suspense fallback={<Loader/>}>
+                <MostPopular />
             </Suspense>
+            
             {/**
             <Suspense fallback={<div>Loading...</div>}>
                 <Annoucements />
@@ -53,12 +58,12 @@ const HomeScreen = () => {
             </Suspense>
             */}
 
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<Loader/>}>
                 <ListBook />
             </Suspense>
 
 
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<Loader/>}>
                 <FAQ />
             </Suspense>
             <Footer />

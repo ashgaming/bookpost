@@ -14,7 +14,7 @@ const Intro = () => {
             <div className="relative h-64 overflow-hidden sm:h-80 lg:h-full">
                 <img
                     alt=""
-                    src={require('./assets/logo_1.jpg')}
+                    src={require('./assets/my_logo.png')}
                     className="absolute inset-0 h-full w-full object-cover"
                 />
             </div>

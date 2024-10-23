@@ -5,18 +5,19 @@ import { useSelector } from "react-redux";
 import BackButton from "../../Components/Element/BackButton";
 import Loader from "../../Components/Message/Loader";
 import Message from "../../Components/Message/Message";
+import DeleteButton from "../../Components/Element/DeleteButton";
 
 const ListStoriesScreen = ({ dispatch }) => {
     const adminstory = useSelector(state => state.listAdminStory)
     const {
-         loading, 
-         error, 
+        loading,
+        error,
         story,
         page,
         pages
-    
+
     } = adminstory
-    
+
     useEffect(() => {
         dispatch(listAdminStory(page));
     }, [dispatch])
@@ -32,14 +33,14 @@ const ListStoriesScreen = ({ dispatch }) => {
 
     const PressHandler = (e, id) => {
         e.preventDefault();
-        navigate(`/list-story`,{ replace: true });
+        navigate(`/edit-story/${id}`,);
     }
-    if(loading) return <Loader />;
-    if(error) return <Message>{error}</Message>;
-    if(!story) return null ;
+    if (loading) return <Loader />;
+    if (error) return <Message>{error}</Message>;
+    if (!story) return null;
     return (
         <div className="bg-white p-8 rounded-md w-full">
-            <BackButton url={`/story-option`}/>
+            <BackButton url={`/story-option`} />
             <div className="flex items-center justify-between pb-6">
                 <div>
                     <h2 className="text-gray-600 font-semibold">Select Story</h2>
@@ -111,17 +112,19 @@ const ListStoriesScreen = ({ dispatch }) => {
                                             <td className="px-5 py-5 border-b border-gray-200  text-sm" onClick={e => PressHandler(e, item._id)}>
                                                 <p className="text-gray-900 whitespace-no-wrap">{item._id}</p>
                                             </td>
-                                            <td className="px-5 py-5 border-b border-gray-200  text-sm" onClick={e =>navigate(`/edit-story/${item._id}`)}>
+                                            <td className="px-5 py-5 border-b border-gray-200  text-sm">
                                                 <span className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
                                                     <span
                                                         aria-hidden
                                                         className="absolute inset-0 bg-green-200 opacity-50 rounded-full"
                                                     ></span>
-                                                    <span className="relative">{
-                                                        <button className="rounded-md">
+                                                    <span className="relative">
+
+                                                        <button onClick={e => navigate(`/edit-story/${item._id}`)} className="rounded-md">
                                                             Edit
                                                         </button>
-                                                }</span>
+
+                                                    </span>
                                                 </span>
                                             </td>
 

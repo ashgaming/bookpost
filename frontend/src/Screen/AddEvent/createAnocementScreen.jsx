@@ -39,9 +39,11 @@ const CreateAnocementScreen = () => {
     // You can dispatch the data or send to an API
   };
 
-  const UploadImage = (file) =>{
-   
-   console.log('files',file)
+  console.log('event',event)
+
+  const UploadImage = (file) => {
+
+    console.log('files', file)
     setCoverFile()
   }
 
@@ -75,10 +77,11 @@ const CreateAnocementScreen = () => {
                   id="event"
                   className="block shadow appearance-none border-2 border-orange-100 rounded w-full py-2 px-4 text-gray-700 mb-3 focus:outline-none focus:bg-white focus:border-orange-500"
                 >
-                  <option value="">Select</option>
+                  <option value="select">Select</option>
                   <option value="Story">New Story</option>
                   <option value="NewChapter">New Chapter</option>
                   <option value="AboutChapter">About Chapter</option>
+                  <option value="AboutStory">About Story</option>
                 </select>
                 {!event && <strong className="text-red-500 text-xs italic">Event is required</strong>}
               </div>
@@ -92,113 +95,119 @@ const CreateAnocementScreen = () => {
                   <ListMyStoryes setStory={setStory} />
                   {!story && <strong className="text-red-500 text-xs italic">Story is required</strong>}
                 </div>
-              )}
+              )
+            }
+            {
+                event !== 'select' && event !== '' && (
+                  <>
+                    {/* Conditional Chapter Input */}
+                    {event === 'AboutChapter' && (
+                      <div className="mb-8">
+                        <label className="block text-gray-700 text-sm font-bold mb-2">
+                          <span className="text-red-500">*</span> Chapter
+                        </label>
+                        <input
+                          type="text"
+                          value={chapter}
+                          onChange={(e) => setChapter(e.target.value)}
+                          className="block shadow appearance-none border-2 border-orange-100 rounded w-full py-2 px-4 text-gray-700 mb-3 focus:outline-none focus:bg-white focus:border-orange-500"
+                        />
+                        {!chapter && <strong className="text-red-500 text-xs italic">Chapter is required</strong>}
+                      </div>
+                    )}
 
-              {/* Conditional Chapter Input */}
-              {event === 'AboutChapter' && (
-                <div className="mb-8">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
-                    <span className="text-red-500">*</span> Chapter
-                  </label>
-                  <input
-                    type="text"
-                    value={chapter}
-                    onChange={(e) => setChapter(e.target.value)}
-                    className="block shadow appearance-none border-2 border-orange-100 rounded w-full py-2 px-4 text-gray-700 mb-3 focus:outline-none focus:bg-white focus:border-orange-500"
-                  />
-                  {!chapter && <strong className="text-red-500 text-xs italic">Chapter is required</strong>}
-                </div>
-              )}
+                    {/* Message */}
+                    <div className="mb-8">
+                      <label className="block text-gray-700 text-sm font-bold mb-2">
+                        <span className="text-red-500">*</span> Message
+                      </label>
+                      <textarea
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        className="block shadow appearance-none border-2 border-orange-100 rounded w-full py-2 px-4 text-gray-700 mb-3 focus:outline-none focus:bg-white focus:border-orange-500"
+                      />
+                      {!message && <strong className="text-red-500 text-xs italic">Message is required</strong>}
+                    </div>
 
-              {/* Message */}
-              <div className="mb-8">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  <span className="text-red-500">*</span> Message
-                </label>
-                <textarea
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  className="block shadow appearance-none border-2 border-orange-100 rounded w-full py-2 px-4 text-gray-700 mb-3 focus:outline-none focus:bg-white focus:border-orange-500"
-                />
-                {!message && <strong className="text-red-500 text-xs italic">Message is required</strong>}
-              </div>
+                    {/* Event Date */}
+                    <div className="mb-8">
+                      <label className="block text-gray-700 text-sm font-bold mb-2">
+                        <span className="text-red-500">*</span> Event Date
+                      </label>
+                      <input
+                        type="date"
+                        value={eventDate}
+                        onChange={(e) => setEventDate(e.target.value)}
+                        className="block shadow appearance-none border-2 border-orange-100 rounded w-full py-2 px-4 text-gray-700 mb-3"
+                      />
+                      <input
+                        type="time"
+                        value={eventTime}
+                        onChange={(e) => setEventTime(e.target.value)}
+                        className="block shadow appearance-none border-2 border-orange-100 rounded w-full py-2 px-4 text-gray-700 mb-3"
+                      />
+                      {!eventDate && <strong className="text-red-500 text-xs italic">Event Date is required</strong>}
+                    </div>
 
-              {/* Event Date */}
-              <div className="mb-8">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  <span className="text-red-500">*</span> Event Date
-                </label>
-                <input
-                  type="date"
-                  value={eventDate}
-                  onChange={(e) => setEventDate(e.target.value)}
-                  className="block shadow appearance-none border-2 border-orange-100 rounded w-full py-2 px-4 text-gray-700 mb-3"
-                />
-                <input
-                  type="time"
-                  value={eventTime}
-                  onChange={(e) => setEventTime(e.target.value)}
-                  className="block shadow appearance-none border-2 border-orange-100 rounded w-full py-2 px-4 text-gray-700 mb-3"
-                />
-                {!eventDate && <strong className="text-red-500 text-xs italic">Event Date is required</strong>}
-              </div>
+                    {/* Expire Date */}
+                    <div className="mb-8">
+                      <label className="block text-gray-700 text-sm font-bold mb-2">
+                        <span className="text-red-500">*</span> Expire Date
+                      </label>
+                      <input
+                        type="date"
+                        value={expireDate}
+                        onChange={(e) => setExpireDate(e.target.value)}
+                        className="block shadow appearance-none border-2 border-orange-100 rounded w-full py-2 px-4 text-gray-700 mb-3"
+                      />
+                      <input
+                        type="time"
+                        value={expireTime}
+                        onChange={(e) => setExpireTime(e.target.value)}
+                        className="block shadow appearance-none border-2 border-orange-100 rounded w-full py-2 px-4 text-gray-700 mb-3"
+                      />
+                      {!expireDate && <strong className="text-red-500 text-xs italic">Expire Date is required</strong>}
+                    </div>
 
-              {/* Expire Date */}
-              <div className="mb-8">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  <span className="text-red-500">*</span> Expire Date
-                </label>
-                <input
-                  type="date"
-                  value={expireDate}
-                  onChange={(e) => setExpireDate(e.target.value)}
-                  className="block shadow appearance-none border-2 border-orange-100 rounded w-full py-2 px-4 text-gray-700 mb-3"
-                />
-                <input
-                  type="time"
-                  value={expireTime}
-                  onChange={(e) => setExpireTime(e.target.value)}
-                  className="block shadow appearance-none border-2 border-orange-100 rounded w-full py-2 px-4 text-gray-700 mb-3"
-                />
-                {!expireDate && <strong className="text-red-500 text-xs italic">Expire Date is required</strong>}
-              </div>
+                    {/* Upload Cover */}
+                    <div className="mb-8">
+                      <label className="block text-gray-700 text-sm font-bold mb-2">
+                        <input
+                          type="checkbox"
+                          checked={WantToUploadCover}
+                          onChange={(e) => setWantToUploadCover(e.target.checked)}
+                          className="mr-2"
+                        />
+                        Want to upload cover
+                      </label>
+                    </div>
 
-              {/* Upload Cover */}
-              <div className="mb-8">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  <input
-                    type="checkbox"
-                    checked={WantToUploadCover}
-                    onChange={(e) => setWantToUploadCover(e.target.checked)}
-                    className="mr-2"
-                  />
-                  Want to upload cover
-                </label>
-              </div>
+                    {WantToUploadCover && (
+                      <div className="mb-8">
+                        <label className="block text-gray-700 text-sm font-bold mb-2">
+                          <span className="text-red-500">*</span> Upload Cover
+                        </label>
+                        <input
+                          type="file"
+                          onChange={(e) => UploadImage(e.target.files[0])}
+                          className="block shadow appearance-none border-2 border-orange-100 rounded w-full py-2 px-4 text-gray-700 mb-3"
+                        />
+                        {!coverFile && <strong className="text-red-500 text-xs italic">Cover is required</strong>}
+                      </div>
+                    )}
 
-              {WantToUploadCover && (
-                <div className="mb-8">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
-                    <span className="text-red-500">*</span> Upload Cover
-                  </label>
-                  <input
-                    type="file"
-                    onChange={(e) => UploadImage(e.target.files[0])}
-                    className="block shadow appearance-none border-2 border-orange-100 rounded w-full py-2 px-4 text-gray-700 mb-3"
-                  />
-                  {!coverFile && <strong className="text-red-500 text-xs italic">Cover is required</strong>}
-                </div>
-              )}
-
-              {/* Submit Button */}
-              <div className="mb-4 text-center">
-                <button
-                  type="submit"
-                  className="transition duration-500 bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                >
-                  Announce
-                </button>
-              </div>
+                    {/* Submit Button */}
+                    <div className="mb-4 text-center">
+                      <button
+                        type="submit"
+                        className="transition duration-500 bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                      >
+                        Announce
+                      </button>
+                    </div>
+                  </>
+                )
+              }
               <hr />
             </form>
           </div>

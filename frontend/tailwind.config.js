@@ -4,8 +4,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        customOrange: '#EC9027', // Define your custom color
+        customOrange: '#EB81A3', // Define your custom color
         hoverOrange: '#FCD779', // Define your custom color
+        navPink: '#EE5081', // Define your custom color
       },
     },
   },

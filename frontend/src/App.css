@@ -40,3 +40,43 @@
     transform: rotate(360deg);
   }
 }
+
+/*  loaders animation */
+@keyframes rotate-animation {
+  0% {
+    transform: translateX(0) translateY(0) rotate(0);
+  }
+
+  50% {
+    transform: translateX(400%) translateY(100%) rotate(90deg);
+  }
+
+  100% {
+    transform: translateX(0) translateY(0) rotate(0);
+  }
+}
+
+.square-container {
+  @apply w-2 h-8 bg-customOrange rounded-lg shadow-lg;
+  animation: rotate-animation 2.5s ease infinite;
+}
+
+.square-top {
+  @apply absolute left-[40%] top-[50%] rotate-90;
+}
+
+.square-bottom {
+  @apply absolute left-[40%] top-[50%] -rotate-90;
+}
+
+.square-left {
+  @apply absolute left-[40%] top-[50%];
+}
+
+.square-right {
+  @apply absolute left-[40%] top-[50%] -rotate-180;
+}
+
+.relative-wrapper {
+  @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
+}

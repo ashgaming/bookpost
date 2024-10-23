@@ -140,12 +140,29 @@ const EditStoryScreen = ({ dispatch }) => {
             </div>
 
             <div className="flex space-x-5 mt-3 mb-2">
-                <input
-                    type="text"
-                    placeholder="Category"
-                    className="border p-2 w-1/2"
-                    ref={catRef}
-                />
+            <select
+                    name="category"
+                    ref={catRef} // Referencing the title input
+                    className="border p-2 rounded-md">
+                    <option value="Fantasy">Fantasy</option>
+                    <option value="Adventure">Adventure</option>
+                    <option value="Fairy Tale">Fairy Tales</option>
+                    <option value="Mystery">Mystery</option>
+                    <option value="Science Fiction">Science Fiction</option>
+                    <option value="Historical Fiction">Historical Fiction</option>
+                    <option value="Horror">Horror</option>
+                    <option value="Romance">Romance</option>
+                    <option value="Rom-Com">Rom-Com</option>
+                    <option value="Drama">Drama</option>
+                    <option value="Thriller">Thriller</option>
+                    <option value="Non Fiction">Non-Fiction</option>
+                    <option value="Biography">Biography</option>
+                    <option value="Comedy">Comedy</option>
+                    <option value="Classic">Classic</option>
+                    <option value="Young Adult">Young Adult</option>
+                    <option value="Children">Children's</option>
+                    <option value="Graphic Novel">Graphic Novel</option>
+                </select>
             </div>
 
             <div className="relative max-h-52 aspect-[9/16] bg-gray-200 overflow-hidden left-1/3 align-middle">
