@@ -3,7 +3,7 @@ import Courosel from '../Components/Courosel/Courosel';
 import Footer from '../Components/Footer/Footer';
 import Loader from '../Components/Message/Loader';
 import ConfirmDelete from '../Components/Message/ConfirmDelete';
-
+import Aos from 'aos';
 
 const MostPopular = React.lazy(() => import('../Components/Layout/MostPopular'));
 const ListBook = React.lazy(() => import('../Components/Layout/ListBook'));
@@ -17,6 +17,7 @@ const HomeScreen = () => {
     const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
+        Aos.init();
         // Check if the page has already loaded
         const checkIfLoaded = () => {
             // Logic to determine if the page has been loaded, 
@@ -43,8 +44,8 @@ const HomeScreen = () => {
             <Suspense fallback={<Loader/>}>
                 <MostPopular />
             </Suspense>
-            
             {/**
+            
             <Suspense fallback={<div>Loading...</div>}>
                 <Annoucements />
             </Suspense>

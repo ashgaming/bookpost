@@ -112,7 +112,7 @@ export const listStoryReducer = (state = {
         case LIST_STORY_ERROR:
             return {
                 ...state,
-                loading: true,
+                loading: false,
                 error: action.payload.error,
             }
             

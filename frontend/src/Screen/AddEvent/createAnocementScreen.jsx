@@ -1,8 +1,17 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import ListMyStoryes from '../../Components/Layout/Event/ListMyStoryes';
+import { createAnoucement } from '../../Redux/Action/EventAction';
+import { useSelector } from 'react-redux'
+import { CREATE_ANOUCEMENT_RESET } from '../../Redux/Constant/EventConstant';
 
-const CreateAnocementScreen = () => {
+const CreateAnocementScreen = ({dispatch}) => {
+
+  const createAnoucements = useSelector(state=>state.createAnoucement)
+  const { loading , event:events , error , success } = createAnoucements
+
+  const navigate = useNavigate();
+
   const [event, setEvent] = useState(''); // Keep track of selected event
   const [story, setStory] = useState(''); // Selected story
   const [chapter, setChapter] = useState(''); // Selected chapter
@@ -35,17 +44,58 @@ const CreateAnocementScreen = () => {
       coverFile,
     };
 
-    console.log('Submitted Data:', announcementData);
-    // You can dispatch the data or send to an API
+    if(ValidateForm(announcementData)){
+      dispatch(createAnoucement(announcementData));
+    }else{
+      alert('Something went wrong...!')
+    }
+    
   };
 
-  console.log('event',event)
+  const ValidateForm = (form) => {
+
+    if (form) {
+      if (message == '') {
+        alert('message cant be empty...!');
+        return false
+      }
+
+      if (eventDate == '') {
+        alert('event date cant be empty...!');
+        return false
+      }
+
+      if (eventTime == '') {
+        alert('event time cant be empty...!');
+        return false
+      }
+
+      if (expireDate == '') {
+        alert('expire date cant be empty...!');
+        return false
+      }
+
+      if (expireTime == '') {
+        alert('expire time cant be empty...!');
+        return false
+      }
+        
+        
+    }
+    return true;
+  }
 
   const UploadImage = (file) => {
-
     console.log('files', file)
     setCoverFile()
   }
+
+  useEffect(()=>{
+    if(success){
+      dispatch({type:CREATE_ANOUCEMENT_RESET})
+      navigate('/')
+    }
+  },[success])
 
   return (
     <div className="mx-auto container flex items-center" id="nav">
@@ -78,7 +128,7 @@ const CreateAnocementScreen = () => {
                   className="block shadow appearance-none border-2 border-orange-100 rounded w-full py-2 px-4 text-gray-700 mb-3 focus:outline-none focus:bg-white focus:border-orange-500"
                 >
                   <option value="select">Select</option>
-                  <option value="Story">New Story</option>
+                  <option value="NewStory">New Story</option>
                   <option value="NewChapter">New Chapter</option>
                   <option value="AboutChapter">About Chapter</option>
                   <option value="AboutStory">About Story</option>
@@ -96,8 +146,8 @@ const CreateAnocementScreen = () => {
                   {!story && <strong className="text-red-500 text-xs italic">Story is required</strong>}
                 </div>
               )
-            }
-            {
+              }
+              {
                 event !== 'select' && event !== '' && (
                   <>
                     {/* Conditional Chapter Input */}

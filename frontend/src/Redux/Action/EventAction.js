@@ -216,7 +216,7 @@ export const createAnoucement = (fdata) => async (dispatch) => {
     try {
         dispatch({ type: CREATE_ANOUCEMENT_REQUEST })
 
-        const { data } = await axios.post(`${backend}/api/story/create/`, fdata, Authconfig)
+        const { data } = await axios.post(`${backend}/event/create/anoucement`, fdata, Authconfig)
 
         dispatch({
             type: CREATE_ANOUCEMENT_SUCCESS,

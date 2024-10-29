@@ -1,5 +1,4 @@
-from django.contrib import admin
-from django.urls import path,include
+from django.urls import path
 from api.Views import eventViews as views
 
 urlpatterns = [
@@ -7,5 +6,6 @@ urlpatterns = [
     path('list/upcoming', views.listUpcomingEvent , name='listEvent'),
     path('list/anoucement', views.listAnocement , name='listAnocement'),
 
+    path('create/anoucement', views.createAnocement , name='createAnocement'),
 
 ]

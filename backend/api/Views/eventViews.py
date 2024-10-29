@@ -128,20 +128,27 @@ def createAnocement(request):
     data = request.data
     user = request.user
 
-    story = Story.objects.get(_id = data.get('story'))
-    chapter = Story.objects.get(_id = data.get('chapter'))
+    print(data)
+    eventType = data['event']
+
+
+    if(eventType=='NewChapter' | eventType =='AboutStory'):
+        story = Story.objects.get(_id = data.get('story'))
+#    chapter = Story.objects.get(_id = data.get('chapter'))
 
     event = Announcements.objects.create(
     user=user,
-    chapter=data['chapter'],
-    story=data.get('story'),       
-    event=data.get('event'),       
-    event_at=data.get('event_at'), 
-    expire_at=data.get('expire_at'), 
-    link=data.get('link'),         
+    chapter=data.get('chapter',None),
+    story=data.get('story', None),       
+    event=data.get('event', None),       
+    message=data.get('message', None),       
+    event_at=data.get('event_at', None), 
+    expire_at=data.get('expire_at', None), 
+    link=data.get('link', None),         
     has_done=data.get('has_done', False),  
-    cover=data.get('cover')        
-    )
+    cover=data.get('cover', None),     
+)
+
 
     serializer = AnocementSerializer(event,many=False)
 

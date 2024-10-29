@@ -29,49 +29,50 @@ const MostPopular = () => {
                 }
             }
         };
-        if(sessionStorage.getItem('popbook')){
+        if (sessionStorage.getItem('popbook')) {
             setBook(JSON.parse(sessionStorage.getItem('popbook')));
-        }else{
+        } else {
             fetchBooks();
         }
     }, []);
 
-    if (loading) return <Loader />; // Display loader while loading
-
     return (
         <section>
-            {error ? (
-                <Message>{error}</Message>
-            ) : (
-                <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
-                    <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-16">
-                        <div className="relative h-64 overflow-hidden rounded-lg sm:h-80 lg:order-last lg:h-full">
-                            <img
-                                alt=""
-                                src={book.cover}
-                                onError={(e)=>handleImageError(e)}
-                                className="absolute inset-0 h-full w-full object-cover"
-                            />
-                        </div>
 
-                        <div className="lg:py-24">
-                            <h2 className="text-3xl font-bold sm:text-4xl">{book.name}</h2>
-                            <h2 className="text-2xl font-bold sm:text-3xl">{book.category}</h2>
+            {loading ? <Loader /> :
+                error ? (
+                    <Message>{error}</Message>
+                ) : (
+                    <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
+                        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-16">
+                            <div className="flex items-center justify-center flex-1 relative w-full overflow-hidden rounded-lg lg:order-last">
+                                <img
+                                    alt=""
+                                    src={book.cover}
+                                    onError={(e) => handleImageError(e)}
+                                    className="w-[250px] h-[400px] m-5 object-cover rounded-lg"
+                                />
+                            </div>
 
-                            <p className="mt-4 text-gray-600">
-                                {book.summary}
-                            </p>
 
-                            <Link
-                                to={`/book/${book._id}`}
-                                className="mt-8 inline-block rounded bg-indigo-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-yellow-400"
-                            >
-                                Get Started Reading
-                            </Link>
+                            <div className="lg:py-24">
+                                <h2 className="text-3xl font-bold sm:text-4xl">{book.name}</h2>
+                                <h2 className="text-2xl font-bold sm:text-3xl">{book.category}</h2>
+
+                                <p className="mt-4 text-gray-600">
+                                    {book.summary}
+                                </p>
+
+                                <Link
+                                    to={`/book/${book._id}`}
+                                    className="mt-8 inline-block rounded bg-indigo-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-yellow-400"
+                                >
+                                    Get Started Reading
+                                </Link>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )}
         </section>
     );
 };

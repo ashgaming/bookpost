@@ -4,10 +4,16 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        customOrange: '#EB81A3', // Define your custom color
+        customOrange: '#438CAA', // Define your custom color
         hoverOrange: '#FCD779', // Define your custom color
-        navPink: '#EE5081', // Define your custom color
+        navPink: '#438CAA', // Define your custom color
+        webb:'#a8c5d4'
       },
+      fontFamily: {
+        script: ['Dancing Script', 'cursive'],
+        serif: ['Lora', 'serif'],
+      },
+
     },
   },
   plugins: [],

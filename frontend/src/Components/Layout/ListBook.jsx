@@ -15,25 +15,21 @@ const ListBook = () => {
             dispatch(listStory());
         }
     }, [Books])
-    // console.log(Books?.length)
-    //  console.log(Books?.length <= 1)
+
 
     return (
         <>
-
             <div className="container mx-auto my-8"> {/* Added margin to separate elements */}
                 <h1 className="m-1 p-5 text-5xl">My Book Collection</h1>
             </div>
+            <div className="container mx-auto p-4 lg:h-auto flex items-center justify-center">
             {loading && <Loader />}
             {error && <Message>{error}</Message>}
-            <div className="container mx-auto p-4 lg:h-auto flex items-center justify-center">
                 {Books?.length <= 0 && <h1>{`No books available ...!`}</h1>}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-
                     {
                         Books && Books.map((book, index) => (<BookCover Book={book} key={index} /> ))
                     }
-
                 </div>
             </div>
         </>

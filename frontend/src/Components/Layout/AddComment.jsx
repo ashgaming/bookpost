@@ -35,7 +35,6 @@ const AddComment = ({ type, id }) => {
                         <h4 className="mb-2 text-lg font-medium">Rate this:</h4>
                         <div className="flex justify-center">
                             {[1, 2, 3, 4, 5].map((star, index) => (
-
                                 <label key={star} className="flex items-center cursor-pointer">
                                     <input
                                         type="radio"

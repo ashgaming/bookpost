@@ -2,6 +2,10 @@ import './App.css';
 import React, { Suspense, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { useRef } from 'react';
+
+import gsap from 'gsap'; // <-- import GSAP
+import { useGSAP } from '@gsap/react'; // <-- import the hook from our React 
 
 // Screens
 import Header from './Components/Header/Header';
@@ -27,13 +31,15 @@ const EditChapter = React.lazy(() => import('./Screen/AddStoryScreen/EditChapter
 const EditStoryScreen = React.lazy(() => import('./Screen/AddStoryScreen/EditStoryScreen'));
 const createAnocementScreen = React.lazy(() => import('./Screen/AddEvent/createAnocementScreen'));
 
+
+gsap.registerPlugin(useGSAP);
 // Layout component to handle Header visibility
 function Layout({ children }) {
   const { pathname } = useLocation();
-
+  
   // Define paths where you want to hide the header
   const noHeaderRoutes = ['/login', '/register', '/Login', '/Register'];
-
+  
   return (
     <div>
       {/* Conditionally render Header based on the current route */}
@@ -45,6 +51,7 @@ function Layout({ children }) {
 
 function App() {
   const dispatch = useDispatch();
+  const container = useRef()
 
 
   ContentSettings();
@@ -73,7 +80,7 @@ function App() {
   ];
 
   return (
-    <div className="App bg-slate-50" style={{ userSelect: 'none' }}>
+    <div ref={container} className="App" style={{ userSelect: 'none' }}>
       <Router>
         <Layout>
           <Routes>

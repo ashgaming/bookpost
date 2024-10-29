@@ -37,9 +37,9 @@ export default function Header() {
             <nav 
             className="font-sans flex flex-col bg-navPink sm:flex-row justify-between items-center py-2 px-6 shadow w-full overflow-x-hidden">
                 <div className="mb-2 sm:mb-0 text-center sm:text-left">
-                    <Link to="/" className="text-2xl no-underline text-grey-darkest hover:text-blue-dark font-bold">Falicia Celestia</Link>
+                    <Link to="/" className="text-2xl no-underline text-grey-darkest hover:text-blue-dark font-bold">Astral Amor</Link>
                     <br />
-                    <span className="text-xs text-grey-dark">Beautiful New Tagline</span>
+                    <span className="text-xs text-grey-dark">Where Destiny Meets Love</span>
                 </div>
 
                 <div className="relative sm:hidden">
@@ -62,8 +62,6 @@ export default function Header() {
                         </Link>
                     ))}
 
-                    { loading && <h1>Looding</h1>}
-                    { error && <h5>error</h5>}
 
                     {
                         userInfo && <button
