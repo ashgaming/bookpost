@@ -121,9 +121,9 @@ const RegisterScreen=()=> {
                 {success && <Message>Registration successful!</Message>}
 
                 <form onSubmit={registerFn}>
+                {error && <Message>{error}</Message>}
                     <div className="mb-4">
                         <label htmlFor="username" className="block text-gray-600">Username</label>
-                {error && <Message>{error}</Message>}
                         <input
                             type="text"
                             id="username"
