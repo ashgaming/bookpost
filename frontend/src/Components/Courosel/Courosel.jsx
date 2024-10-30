@@ -28,7 +28,7 @@ export default function Courosel() {
                         Welcome to a realm of heartfelt tales
                     </h1>
                     <p className="text-xl mb-12 font-script"  data-aos="fade-up" >For those who believe every love has a destiny</p>
-                    <Link  data-aos="fade-up" to="" className="bg-customOrange text-white py-4 px-12 rounded-full hover:bg-hoverOrange">
+                    <Link  data-aos="fade-up" to="#BookList" className="bg-customOrange text-white py-4 px-12 rounded-full hover:bg-hoverOrange">
                         Explore
                     </Link>
                 </div>

@@ -8,7 +8,7 @@ const ContentSettings = () => {
     const handleContextMenu = (event) => {
       event.preventDefault();
     };
-    document.addEventListener('contextmenu', handleContextMenu);
+   // document.addEventListener('contextmenu', handleContextMenu);
     // Prevent copying content
     const handleCopy = (e) => {
       e.preventDefault();

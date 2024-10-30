@@ -40,8 +40,6 @@ const AddChapterScreen = ({ dispatch }) => {
 
     };
 
-    console.log('sucess', success)
-
     useEffect(() => {
         if (success) {
             alert('Chapter Updated ...')
@@ -70,7 +68,7 @@ const AddChapterScreen = ({ dispatch }) => {
         <form onSubmit={handleSubmit} className="form bg-white p-6 my-10 relative max-w-lg mx-auto shadow-lg rounded-lg">
             {loading && <LoaderModel />}
             <BackButton url={`/list-story`}/>
-            <h3 className="text-2xl text-gray-900 font-semibold">Edit Chapter</h3>
+            <h3 className="text-2xl text-gray-900 font-semibold">Write new chapter</h3>
             <div className="flex space-x-5 mt-3">
                 <input
                     type="text"

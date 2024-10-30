@@ -33,7 +33,7 @@ const ListStoriesScreen = ({ dispatch }) => {
 
     const PressHandler = (e, id) => {
         e.preventDefault();
-        navigate(`/add/story/${id}/add`,);
+        navigate(`/add/story/${id}`,);
     }
     if (loading) return <Loader />;
     if (error) return <Message>{error}</Message>;

@@ -3,16 +3,17 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { listAdminChapter } from "../../Redux/Action/StoryAction";
 import { useSelector } from "react-redux";
 import BackButton from "../../Components/Element/BackButton";
+import Message from "../../Components/Message/Message";
+import Loader from "../../Components/Message/Loader";
 
 const ListChapterScreen = ({dispatch}) => {
     const {storyid} = useParams();
     const navigate = useNavigate()
 
     const chapterList = useSelector(state=>state.listAdminChapter)
-    const {//loading,error,
+    const {loading,error,
         chapters} = chapterList
 
-    console.log(chapters)
     useEffect(()=>{
         dispatch(listAdminChapter(storyid))
     },[dispatch,storyid])
@@ -32,9 +33,13 @@ const ListChapterScreen = ({dispatch}) => {
         navigate(`/add/story/${storyid}/chapter/${id}/edit`);
     }
 
-    if(chapters===undefined) return null;
+    if(loading) return <Loader/>;
+    if(chapters===undefined) return <Message>Nothing to show here...!</Message>;
+
+    console.log('error',error)
     return (
         <div className="bg-white p-8 rounded-md w-full">
+            {error && <Message>{error}</Message>}
             <BackButton url={`/list-story`}/>
             <div className="flex items-center justify-between pb-6">
                 <div>

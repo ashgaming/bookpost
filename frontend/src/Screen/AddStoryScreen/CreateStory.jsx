@@ -29,6 +29,28 @@ const CreateStory = ({ dispatch }) => {
     const [uploading, setUploading] = useState(false); // Loader state for image upload
     const [uploadProgress, setUploadProgress] = useState(0); // Upload progress state
 
+    const options = [
+
+       "Fantasy",
+        "Adventure",
+        "Fairy Tale",
+        "Mystery",
+        "Science Fiction",
+        "Historical Fiction",
+        "Horror",
+        "Romance",
+        "Rom-Com",
+        "Drama",
+        "Thriller",
+        "Non Fiction",
+        "Biography",
+        "Comedy",
+        "Classic",
+        "Young Adult",
+        "Children",
+        "Graphic Novel",
+    ]
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -122,24 +144,12 @@ const CreateStory = ({ dispatch }) => {
                     name="category"
                     ref={catRef} // Referencing the title input
                     className="border p-2 rounded-md">
-                    <option value="Fantasy">Fantasy</option>
-                    <option value="Adventure">Adventure</option>
-                    <option value="Fairy Tale">Fairy Tales</option>
-                    <option value="Mystery">Mystery</option>
-                    <option value="Science Fiction">Science Fiction</option>
-                    <option value="Historical Fiction">Historical Fiction</option>
-                    <option value="Horror">Horror</option>
-                    <option value="Romance">Romance</option>
-                    <option value="Rom-Com">Rom-Com</option>
-                    <option value="Drama">Drama</option>
-                    <option value="Thriller">Thriller</option>
-                    <option value="Non Fiction">Non-Fiction</option>
-                    <option value="Biography">Biography</option>
-                    <option value="Comedy">Comedy</option>
-                    <option value="Classic">Classic</option>
-                    <option value="Young Adult">Young Adult</option>
-                    <option value="Children">Children's</option>
-                    <option value="Graphic Novel">Graphic Novel</option>
+                    {
+                        options.map((item)=>(
+                            <option value={item}>{item}</option>
+                        ))
+                    }
+                    
                 </select>
 
             </div>

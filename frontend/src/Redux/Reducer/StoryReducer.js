@@ -391,7 +391,7 @@ export const listAdminChapterReducer = (state = {
                 ...state,
                 loading: false,
                 chapters: [],
-                error: action.payload,
+                error: action.payload.error,
             }
 
         default:

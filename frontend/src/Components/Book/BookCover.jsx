@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { handleImageError } from '../../Helper/ImageUrlCorrect';
+import Stars from '../Element/Stars';
 
 export const BookCover = ({ Book }) => {
   if (!Book) return null;
@@ -10,23 +11,22 @@ export const BookCover = ({ Book }) => {
       to={`/book/${Book._id}`}
       className="max-w-sm mx-auto relative shadow-md rounded-lg cursor-pointer overflow-hidden transition-transform duration-300 hover:scale-105"
     >
-      <img
-        src={Book.cover}
-        alt={Book.name}
-        onError={(e)=>handleImageError(e)}
-        className="w-full h-64 object-cover rounded-t-lg"
-      /* h-64 gives a fixed height for a more uniform layout */
-      />
+      <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
 
-      <div className="absolute bottom-0 left-0 right-0 h-40 bg-black bg-opacity-60 backdrop-blur-sm text-white p-4 rounded-b-lg">
-        <h1 className="text-2xl font-semibold truncate">{Book.name}</h1>
-        {/* The `truncate` class ensures long text doesn't overflow */}
+        <img
+          src={Book.cover}
+          alt="Product" class="h-80 w-72 object-cover rounded-t-xl"
+          onError={(e) => handleImageError(e)} />
+        <div class="px-4 py-3 w-72">
+          <span class="text-gray-400 mr-3 uppercase text-xs">Novel</span>
+          <p class="text-lg font-bold text-black truncate block capitalize">{Book.name}</p>
+          <div class="flex items-center">
+            <p class="text-lg font-semibold text-black cursor-auto my-3"><Stars rating={Book.rating} count={Book.count} /></p>
+          </div>
+        </div>
 
-        <p className="mt-2 text-sm line-clamp-3">
-          {Book.summary}
-        </p>
-        {/* The `line-clamp-3` class ensures only 3 lines of summary are displayed */}
       </div>
+
     </Link>
 
   )

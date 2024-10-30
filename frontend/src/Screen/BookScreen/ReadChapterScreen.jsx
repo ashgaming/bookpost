@@ -11,7 +11,7 @@ const ReadChapterScreen = ({ dispatch }) => {
   const { chapterid, storyid } = useParams();
 
   const ReadChapter = useSelector(state => state.readChapter)
-  const { loading,error,chapter,count } = ReadChapter
+  const { loading, error, chapter, count } = ReadChapter
 
   /*const LikeThisChapter = () => {
     chapter.likes += 1;
@@ -23,11 +23,11 @@ const ReadChapterScreen = ({ dispatch }) => {
     } catch (err) {
       alert(err)
     }
-  },[chapterid,dispatch,storyid])
-  
-  if(loading) return <Loader/>;
-  if(error) return <Message>error</Message>;
-  if(!chapter._id) return null;
+  }, [chapterid, dispatch, storyid])
+
+  if (loading) return <Loader />;
+  if (error) return <Message>error</Message>;
+  if (!chapter._id) return null;
 
   const paragraphs = chapter.chapter.split(/\n+/).filter(p => p.trim() !== '');
   return (
@@ -36,7 +36,7 @@ const ReadChapterScreen = ({ dispatch }) => {
         {/* Chapter Header */}
         <h1 className="text-3xl font-semibold text-blue-700 mb-4">Read Chapter</h1>
         <div className="flex justify-between items-center mb-8">
-          <h2 className="text-xl font-medium">Story Id: {storyid}</h2>
+          <h2 className="text-xl font-medium">Story Id: {chapter.story}</h2>
           <h2 className="text-xl font-medium">Chapter Id: {chapterid}</h2>
         </div>
 
@@ -70,7 +70,7 @@ const ReadChapterScreen = ({ dispatch }) => {
                 {para}
               </p>
             ))}
-            <p>****</p>
+            <p>***END***</p>
 
           </div>
         </section>

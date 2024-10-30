@@ -345,53 +345,56 @@ def listAdminStory(request):
 @permission_classes([IsAdminUser])
 def listAdminChapter(request, storyid):
     try:
-        # Get the page number from query parameters (default to 1 if not provided)
-        page = request.query_params.get('page', 1)
-
-        # Try to get cached chapters based on storyid and page
+        # Get the page number from query parameters, default to 1 if not provided
+        page = int(request.query_params.get('page', 1))
         cache_key = f'listAdminChapter_{storyid}_page_{page}'
-        chapters = cache.get(cache_key)
+
+        # Try to get cached serialized chapters data
+        serialized_chapters = cache.get(cache_key)
         
-        if chapters:  
-            print('db: cache')  # Retrieved from cache
+        if serialized_chapters:
+            print('db: cache')  # Data is from cache
         else:
-            # Fetch all chapters associated with the story ID and optimize query
-            chapters_queryset = Chapter.objects.filter(story_id=storyid).select_related('related_field').all()
-            
-            if chapters_queryset.exists():  # Check if chapters exist for the story
-                # Paginate the queryset (12 chapters per page, for example)
-                paginator = Paginator(chapters_queryset, 12)
+            # Fetch chapters associated with the story ID and related user data
+            chapters = Chapter.objects.filter(story_id=storyid).select_related('user')
+            if chapters.exists():  # Check if chapters exist
+                # Paginate the queryset (12 chapters per page)
+                paginator = Paginator(chapters, 12)
                 
                 try:
-                    chapters = paginator.page(page)
+                    paginated_chapters = paginator.page(page)
                 except PageNotAnInteger:
-                    chapters = paginator.page(1)
+                    paginated_chapters = paginator.page(1)
                 except EmptyPage:
-                    chapters = paginator.page(paginator.num_pages)
+                    paginated_chapters = paginator.page(paginator.num_pages)
 
-                # Serialize the paginated chapters
-                serialized_chapters = ChapterListAdminSerializer(chapters, many=True).data
+                # Serialize paginated data
+                serialized_chapters = ChapterListAdminSerializer(paginated_chapters, many=True).data
                 
-                # Cache the serialized data for this page
-                cache.set(cache_key, serialized_chapters, timeout=60)  # Cache for 60 seconds
-                
-                print('db: pg')  # Fetched from the database
+                # Cache serialized chapters for 60 seconds
+                cache.set(cache_key, serialized_chapters, timeout=60)
+                print('db: pg')  # Data is from the database
             else:
-                message = {'message': 'No chapters available for this story'}
-                return Response(message, status=status.HTTP_204_NO_CONTENT)
+                error = {'error': 'No chapters available for this story'}
+                return Response(error, status=status.HTTP_204_NO_CONTENT)
 
-        # Return paginated data along with pagination metadata
+        # If the paginator wasn't used (in case of cached data), define pages for response
+        pages = paginator.num_pages if 'paginator' in locals() else 1
+
+        # Return serialized data along with pagination metadata
         return Response({
             'chapters': serialized_chapters,
-            'page': int(page),
-            'pages': paginator.num_pages
+            'page': page,
+            'pages': pages
         }, status=status.HTTP_200_OK)
 
     except Chapter.DoesNotExist:
-        message = {'details': 'Story not found or invalid story ID'}
+        message = {'error': 'Story not found or invalid story ID'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
-        return Response({'details': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        # Log error details for troubleshooting
+        print(f"An error occurred: {e}")
+        return Response({'error': 'An unexpected error occurred.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['PUT'])  # Using 'PUT' to update an existing chapter
