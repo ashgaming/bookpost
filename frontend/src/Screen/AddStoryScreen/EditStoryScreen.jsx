@@ -19,16 +19,12 @@ const EditStoryScreen = ({ dispatch }) => {
     const { loading, error, book } = readStory;
 
     const updateStoryState = useSelector(state => state.updateStory);
-    const { loading: updateLoading,
-        error: updateError,
-        success } = updateStoryState;
+    const { loading: updateLoading, error: updateError, success } = updateStoryState;
 
     // Form fields refs
     const titleRef = useRef(null);
     const summaryRef = useRef(null);
     const catRef = useRef(null);
-
-
 
     const navigate = useNavigate();
 

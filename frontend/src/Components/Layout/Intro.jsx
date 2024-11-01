@@ -15,7 +15,7 @@ const Intro = () => {
                             <img
                                 alt=""
                                 src={require('./assets/logo.jpg')}
-                                className="absolute inset-0 h-full w-full object-cover"
+                                className="absolute inset-0 h-full w-full object-cover border-8 rounded-full"
                             />
                         </div>
 

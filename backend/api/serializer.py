@@ -4,23 +4,61 @@ from datetime import datetime
 from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import User
-from .models import Story , Chapter , Review , ContactUs , Events ,Announcements
+from .models import *
+from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.views import exception_handler
+from rest_framework.exceptions import AuthenticationFailed, NotAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
  
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self,attrs):
-        data = super().validate(attrs)
+        try:
+            # Perform the standard validation
+            data = super().validate(attrs)
 
-        serializer = UserSerializersWithToken(self.user).data
+            # Add additional user information to the response data
+            serializer = UserSerializersWithToken(self.user).data
+            data.update(serializer)
 
-        for k,v in serializer.items():
-            data[k] = v
+            # Update the user login details
+            self.user.is_active = True
+            self.user.last_login = datetime.now()
+            self.user.save()
 
-        self.user.is_active = True
-        self.user.last_login = datetime.now()
-        self.user.save()
-        return data
+            return data
+
+        except AuthenticationFailed:
+            # Raise AuthenticationFailed with a custom message for invalid credentials
+            raise AuthenticationFailed(
+                detail="Unauthorized access. Please check your credentials.",
+                code='authorization'
+            )
+        except Exception as e:
+            # Raise AuthenticationFailed with a generic message for other errors
+            raise AuthenticationFailed(
+                detail="Authentication failed due to an unexpected error.",
+                code='authorization'
+            )
     
+
+
+
+def custom_exception_handler(exc, context):
+    # Call the default exception handler first
+    response = exception_handler(exc, context)
+    
+    # Check if the exception is related to authentication errors
+    if isinstance(exc, (AuthenticationFailed, NotAuthenticated)):
+        custom_response_data = {
+            "error": "Authorization failed",
+            "message": "You do not have permission to access this resource. Please log in and try again.",
+        }
+        return Response(custom_response_data, status=status.HTTP_401_UNAUTHORIZED)
+    
+    # Return the default response for other errors
+    return response    
 
     
 class UserSerializer(serializers.ModelSerializer):

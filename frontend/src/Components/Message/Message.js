@@ -1,9 +1,9 @@
 import React from 'react'
 
-const Message = ({Children}) => {
+const Message = ({children}) => {
   return (
     <div>
-      {Children}
+      {children}
     </div>
   )
 }

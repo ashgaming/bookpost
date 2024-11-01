@@ -48,10 +48,24 @@ export const loginUser = (email, password) => async (dispatch) => {
 
     }
     catch (err) {
+
+        let errorMessage;
+
+        if (!err.response) {
+            // No response received - likely a network error
+            errorMessage = 'Network error: Unable to connect. Please check your internet connection.';
+        } else if (err.response.status === 401) {
+            // Unauthorized error
+            errorMessage = 'Invalid email or password. Please try again.';
+        } else {
+            // Other errors
+            errorMessage = 'An error occurred. Please try again.';
+        }
+
         dispatch({
             type: USER_LOGIN_ERROR,
-            payload: err
-        })
+            payload: errorMessage,
+        });
     }
 }
 
@@ -125,6 +139,7 @@ export const verifyUser = (token) => async (dispatch, getState) => {
 
 export const logoutUser = () => (dispatch) => {
     localStorage.removeItem('token');
+    sessionStorage.clear('user')
     dispatch({ type: USER_LOGOUT })
     dispatch({ type: USER_DETAILS_RESET })
 }

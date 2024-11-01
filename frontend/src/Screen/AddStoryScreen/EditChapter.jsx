@@ -161,7 +161,7 @@ const EditChapter = ({ dispatch }) => {
                 placeholder="Write Chapter here"
                 className="border p-2 mt-3 w-full"
                 ref={chapterRef}
-                maxLength={5000}
+                maxLength={20000}
             />
 
             <input

@@ -16,7 +16,7 @@ import {
 } from '../Constant/UserConstant'
 
 export const userLoginReducer = (state = {
-    loading: false,
+    loading: false,error:false,
 }, action) => {
     switch (action.type) {
         case USER_LOGIN_REQUEST:
@@ -26,8 +26,6 @@ export const userLoginReducer = (state = {
                 error: false,
             }
             
-
-
         case USER_LOGIN_SUCCESS:
             return {
                 ...state,
@@ -84,7 +82,7 @@ export const userRegisterReducer = (state = {
             return {
                 ...state,
                 loading: false,
-                error: action.payload.error,
+                error: action.payload.message,
             }
 
         case USER_REGISTER_RESET:
@@ -92,7 +90,7 @@ export const userRegisterReducer = (state = {
                 ...state,
                 loading: false,
                 success:false,
-                error:null,
+                error:false,
                 token:'',
             }
 

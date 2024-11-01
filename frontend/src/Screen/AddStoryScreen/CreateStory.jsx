@@ -30,7 +30,6 @@ const CreateStory = ({ dispatch }) => {
     const [uploadProgress, setUploadProgress] = useState(0); // Upload progress state
 
     const options = [
-
        "Fantasy",
         "Adventure",
         "Fairy Tale",
@@ -146,7 +145,7 @@ const CreateStory = ({ dispatch }) => {
                     className="border p-2 rounded-md">
                     {
                         options.map((item)=>(
-                            <option value={item}>{item}</option>
+                            <option key={item} value={item}>{item}</option>
                         ))
                     }
                     

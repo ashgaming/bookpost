@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 class Story(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL,null=True)
     name = models.CharField(max_length=200,null=True,blank=True)
+    status = models.CharField(max_length=50,null=True,blank=True)
     category = models.CharField(max_length=200,null=True,blank=True)
     summary = models.TextField(null=True,blank=True)
     author = models.CharField(max_length=200,null=True,blank=True)
