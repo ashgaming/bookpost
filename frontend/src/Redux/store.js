@@ -16,6 +16,14 @@ const store = createStore(combineReducer, initialState,
     composeWithDevTools(applyMiddleware(...middleware),
     ))
 */
+const store = createStore(
+    combineReducer,
+    initialState,
+    process.env.NODE_ENV === 'development'
+        ? composeWithDevTools(applyMiddleware(...middleware))
+        : applyMiddleware(...middleware)
+);
+/*
 const store = createStore(combineReducer, initialState,
     applyMiddleware(...middleware))
     /*

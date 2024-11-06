@@ -1,30 +1,49 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { createComment } from '../../Redux/Action/StoryAction';
 
 const AddComment = ({ type, id }) => {
+
+    const createComments = useSelector(state=>state.createComment)
+    const { loading , error , success , comment:comments} = createComments
+
     const [rate, setValue] = useState(0);
     const [comment, setComment] = useState('');
+    const dispatch = useDispatch();
+
+    const commentRef = useRef('');
+
 
     const submitHandler = (e) => {
+        e.preventDefault(); 
+        
+        // Ensure `type`, `rating`, and `commentRef.current` exist before creating the form
+        const form = {
+            storyid:id,
+            type: type || "",  // default to an empty string if `type` is undefined
+            rate:rate || 0,  // set default rate to 0 if `rateRef` is undefined
+            comment: commentRef.current ? commentRef.current.value : ""  // default comment to an empty string
+        };
+    
+        // Dispatch the action 
+        dispatch(createComment(form));
+    
+        // Clear form fields after submission
+        if (commentRef.current) commentRef.current.value = '';
+        setValue(0);  // If this is resetting a state value (e.g., a rating component), keep it
+    };
+
+    const handleRating = (e) =>{
         e.preventDefault();
-
-        switch (type) {
-            case 'chapter':
-                alert('comment added to the chapter');
-                break;
-            case 'story':
-                alert('comment added to the story');
-                break;
-            default:
-                alert('none');
-        }
-
-
-        setValue(0);
-        setComment('');
+        setValue(e.target.value == rate ? 0 : e.target.value)
     }
+
+
     return (
         <div className="max-w-4xl py-16 xl:px-8 flex justify-center mx-auto">
             <div className="w-full mt-16 md:mt-0">
+                {loading && <h1>Loading...</h1>}
+                {error && <h1>Error...</h1>}
                 <form
                     onSubmit={(e) => submitHandler(e)}
                     className="relative z-10 h-auto p-8 py-10 bg-white border-b-2 border-gray-300 rounded-lg shadow-2xl px-7">
@@ -41,8 +60,7 @@ const AddComment = ({ type, id }) => {
                                         name="rating"
                                         value={star}
                                         className="hidden"
-                                        required
-                                        onClick={(e) => setValue(e.target.value)}
+                                        onClick={(e) => handleRating(e)}
                                     />
                                     {
                                         rate >= star ? (
@@ -81,13 +99,13 @@ const AddComment = ({ type, id }) => {
                         rows="5"
                         required
                         maxLength={500}
-                        value={comment}
                         onChange={(e) => setComment(e.target.value)}
+                        ref={commentRef}
                     >
                     </textarea>
                     <p
                         className='mb-4 text-right'
-                    >{comment.length}/500</p>
+                    >{commentRef.current.value?.length ? commentRef.current.value?.length : '0'}/500</p>
 
 
                     {/* Submit Button */}

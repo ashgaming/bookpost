@@ -15,7 +15,12 @@ urlpatterns = [
     path('story/<str:storyid>',views.storyDetails, name="details-story-read"),
     path('story/<str:storyid>/chapter/list',views.listChapter, name="list-chapter"),
     path('story/<str:storyid>/chapter/<str:chapterid>',views.readChapter, name="list-chapter"),
-
+    
+    #comments
+    path('story/<str:storyid>/comment/create',views.createComment, name="comment-create"),
+    path('story/<str:id>/comment/list',views.listComments, name="comment-list"),
+    path('comment/delete/<str:id>',views.deleteComment, name="comment-delete"),
+    
     #author
     path('admin/story/list',views.listAdminStory, name="list-story-admin"),
     path('admin/story/<str:storyid>/chapter/list',views.listAdminChapter, name="list-chapter-admin"),

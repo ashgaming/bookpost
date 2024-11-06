@@ -35,16 +35,27 @@ import {
     LIST_ADMIN_CHAPTER_REQUEST,
     LIST_ADMIN_CHAPTER_SUCCESS,
     LIST_ADMIN_CHAPTER_ERROR,
+
     UPDATE_STORY_REQUEST,
     UPDATE_STORY_SUCCESS,
     UPDATE_STORY_ERROR,
+
+    CREATE_COMMENT_REQUEST,
+    CREATE_COMMENT_SUCCESS,
+    CREATE_COMMENT_ERROR,
+
+    GET_COMMENT_REQUEST,
+    GET_COMMENT_SUCCESS,
+    GET_COMMENT_ERROR,
+
+
 
 } from '../Constant/StoryConstant'
 import { backend } from '../../Connection/conn'
 
 const token = localStorage.getItem('token') ? localStorage.getItem('token') : null;
 
-const Authconfig = {
+export const Authconfig = {
     headers: {
         'Content-type': 'application/json',
         Authorization: `Bearer ${token}`,
@@ -52,7 +63,7 @@ const Authconfig = {
     withCredentials: true,
 }
 
-const config = {
+export const config = {
     headers: {
         'Content-type': 'application/json',
     }
@@ -256,6 +267,45 @@ export const updateStory = (storyid, fdata) => async (dispatch) => {
     catch (err) {
         dispatch({
             type: UPDATE_STORY_ERROR,
+            payload: err
+        })
+    }
+}
+
+
+export const createComment = (fdata) => async (dispatch) => {
+    try {
+        dispatch({ type: CREATE_COMMENT_REQUEST })
+
+        const { data } = await axios.post(`${backend}/api/story/${fdata.storyid}/comment/create`, fdata, Authconfig)
+        dispatch({
+            type: CREATE_COMMENT_SUCCESS,
+            payload: data
+        })
+
+    }
+    catch (err) {
+        dispatch({
+            type: CREATE_COMMENT_ERROR,
+            payload: err
+        })
+    }
+}
+
+export const listComment = (storyid) => async (dispatch) => {
+    try {
+        dispatch({ type: GET_COMMENT_REQUEST })
+
+        const { data } = await axios.get(`${backend}/api/story/${storyid}/comment/list`, config)
+        dispatch({
+            type: GET_COMMENT_SUCCESS,
+            payload: data
+        })
+
+    }
+    catch (err) {
+        dispatch({
+            type: GET_COMMENT_ERROR,
             payload: err
         })
     }

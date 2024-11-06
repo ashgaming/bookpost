@@ -3,12 +3,12 @@ import React, { useEffect } from 'react';
 const ContentSettings = () => {
   useEffect(() => {
     // Disable right-click context menu
-    /*
-    */
     const handleContextMenu = (event) => {
       event.preventDefault();
-    };
-    document.addEventListener('contextmenu', handleContextMenu);
+      };
+      document.addEventListener('contextmenu', handleContextMenu);
+      /*
+    */
     // Prevent copying content
     const handleCopy = (e) => {
       e.preventDefault();
@@ -32,12 +32,16 @@ const ContentSettings = () => {
     window.addEventListener('keydown', handleKeydown);
 
     // Cleanup event listeners on component unmount
-    return () => {
-      document.removeEventListener('contextmenu', handleContextMenu);
-      document.removeEventListener('copy', handleCopy);
-      document.removeEventListener('selectstart', handleSelectStart);
-      window.removeEventListener('keydown', handleKeydown);
-    };
+    if(process.env.NODE_ENV === 'development'){
+      return () => { 
+        document.removeEventListener('contextmenu', handleContextMenu);
+        document.removeEventListener('copy', handleCopy);
+        document.removeEventListener('selectstart', handleSelectStart);
+        window.removeEventListener('keydown', handleKeydown);
+      };
+    }else{
+      return null;
+    }
   }, []); // Empty dependency array to run only once on mount
 
   return (

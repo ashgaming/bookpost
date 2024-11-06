@@ -175,6 +175,11 @@ class ContactUsSerializer(serializers.ModelSerializer):
         model = ContactUs
         fields = '__all__'
 
+class CommentsSerializer(serializers.ModelSerializer):
+     class Meta:
+        model = Review
+        fields = '__all__'
+
 class AnocementSerializer(serializers.ModelSerializer):
      class Meta:
         model = Announcements

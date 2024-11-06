@@ -80,7 +80,9 @@ function App() {
   ];
 
   return (
-    <div ref={container} className="App" style={{ userSelect: 'none' }}>
+    <div ref={container}
+    className="App scrollbar-blue overflow-y-scroll max-h-screen h-[100vh] bg-white border border-gray-300 rounded-lg" 
+    style={{ userSelect: 'none' }}>
       <Router>
         <Layout>
           <Routes>

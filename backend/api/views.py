@@ -2,23 +2,24 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view , permission_classes
 from rest_framework.permissions import IsAuthenticated , IsAdminUser
 from rest_framework_simplejwt.views import TokenObtainPairView
-from api.serializer import MyTokenObtainPairSerializer , UserSerializersWithToken , StorySerializer , StoryListSerializer ,ChapterListSerializer , ChapterSerializer ,StoryListAdminSerializer ,ChapterListAdminSerializer , ContactUsSerializer
-from django.contrib.auth.hashers import make_password
 from rest_framework import status
-from django.contrib.auth.models import User
-from .models import Story , Chapter , Review , ContactUs
-from datetime import datetime
-from django.db.models import Q 
-import os
-from django.conf import settings
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from urllib.parse import quote , unquote
+from api.serializer import *
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import User
+from django.core.files.storage import default_storage
+from django.conf import settings
+from django.shortcuts import get_object_or_404
+from .models import Story , Chapter , Review , ContactUs
 from django.db.utils import DatabaseError
+from django.db.models import Q 
+from urllib.parse import  unquote
+from datetime import datetime
+import os
 
 #redis cache
 from django.core.cache import cache
+from redis.exceptions import ConnectionError as RedisConnectionError
 
 #clodinary
 import cloudinary.uploader
@@ -75,19 +76,60 @@ def userDetails(request,token):
 
 @api_view(['GET'])
 def listStory(request):
-    if cache.get('storylist'):
-        print('list cache')
-        return Response(cache.get('storylist'))
-    else:
-        try:
-            print('list DB')
-            story = Story.objects.all()
-            serializer = StoryListSerializer(story,many=True)
-            cache.set('storylist',serializer.data,50)
-            return Response(serializer.data)
-        except:
-            message = {'details':'User with this email already exists'}
-            return Response(message,status=status.HTTP_400_BAD_REQUEST)
+    try:
+        storylist = None
+        # Check Redis connection by pinging it
+       
+         # Attempt to retrieve 'storylist' from cache
+        try:          
+            print('hit')
+            storylist = cache.get('storylist')
+           
+            if storylist is not None:
+                # Return the cached storylist if available
+                return Response(storylist, status=status.HTTP_200_OK)
+            
+        except RedisConnectionError:
+            print("Cache service unavailable, proceeding with database fallback.")
+            storylist = None  # Redis is unavailable, so we skip caching
+        except Exception as e:
+            print(e)
+            storylist = None  # Redis is unavailable, so we skip caching
+
+        
+        # Return the cached storylist if available
+        if storylist is not None:
+            return Response(storylist, status=status.HTTP_200_OK)
+
+        # Cache miss or Redis unavailable; fetch from the database
+        story = Story.objects.all()
+        print('story list fetch from db')
+        serializer = StoryListSerializer(story, many=True)
+        storylist_data = serializer.data
+
+        # Attempt to cache the result if Redis is connected
+        if storylist_data and not storylist:  # Cache only if Redis was available earlier
+            try:
+                cache.set('storylist', storylist_data, timeout=50)
+            except Exception as e:
+                print(e)
+                
+        return Response(storylist_data, status=status.HTTP_200_OK)
+
+    except RedisConnectionError:
+        # Redis connection error while attempting to store data in cache
+        return Response(
+            {'message': 'Cache service unavailable, serving from database.'},
+            status=status.HTTP_503_SERVICE_UNAVAILABLE
+        )
+    
+    except Exception:
+        # General error handling for database or serialization issues
+        return Response(
+            {'message': 'An error occurred while fetching stories.'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+    
 
 #done
 @api_view(['GET'])
@@ -95,26 +137,34 @@ def listStory(request):
 def storyDetails(request,storyid):
     data = request.data
     user = request.user
-    if cache.get(f'story{storyid}'):
-        # Check if story views are cached
-        trackViews(storyid)
-        # Return the cached story data
-        return Response(cache.get(f'story{storyid}'))
-    else:
-        try:
-            story = Story.objects.get(_id=storyid)
-            # Increment the views count
-            story.views += 1
-            story.save()  # Save the updated story object
 
-            serializer = StorySerializer(story,many=False)
-            cache.set(f'story{storyid}',serializer.data,1000)
-            
+    try:
+        if cache.get(f'story{storyid}'):
+            # Check if story views are cached
             trackViews(storyid)
-            return Response(serializer.data)
-        except:
-            message = {'details':'User with this email already exists'}
-            return Response(message,status=status.HTTP_400_BAD_REQUEST)
+            # Return the cached story data
+            return Response(cache.get(f'story{storyid}'))
+    except Exception as e:
+        print(e)
+
+
+
+    try:
+        story = Story.objects.get(_id=storyid)
+        # Increment the views count
+        story.views += 1
+        story.save()  # Save the updated story object
+        serializer = StorySerializer(story,many=False)
+        try:
+            cache.set(f'story{storyid}',serializer.data,1000)
+        except Exception as e:
+            print(e)
+         
+            trackViews(storyid)
+        return Response(serializer.data)
+    except:
+         message = {'details':'User with this email already exists'}
+         return Response(message,status=status.HTTP_400_BAD_REQUEST)
 
 #done
 @api_view(['GET'])
@@ -288,7 +338,6 @@ def uploadImage(request):
     except Exception as e:
         # Handle any exceptions that may occur during upload
         return Response({"error": str(e)}, status=500)
-    
 
 
 @api_view(['GET'])
@@ -534,27 +583,172 @@ def listContactUs(request):
     serilizer = ContactUsSerializer(form,many=True)
 
     return Response(serilizer.data,status=status.HTTP_202_ACCEPTED)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def createComment(request,storyid):
+    user = request.user
+    data = request.data
+
+    # Validate 'type', 'rate', and 'comment' fields
+    typee = data.get('type')
+    rating = data.get('rate') or None
+    comment_text = data.get('comment')
+    
+    if not typee or not comment_text:
+        return Response({'message': 'Type, rate, and comment fields are required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    story = Story.objects.filter(_id=storyid)[0]
+
+    
+    try:
+
+        # Set common fields for Review object
+        review_data = {
+            'storyID': story,
+            'user': user,
+            'comment': comment_text,
+            'username': user.username.replace('@gmail.com', ''),
+        }
+
+
+        # Add 'chapterid' if type is 'chapter' and 'chapterid' is provided
+        if typee == 'chapter':
+            chapterid = data.get('chapterid')
+            if not chapterid:
+                return Response({'message': 'Chapter ID is required for chapter comments.'}, status=status.HTTP_400_BAD_REQUEST)
+            review_data['chapterId'] = chapterid
+
+        # Create the Review object
+        Review.objects.create(**review_data)
+
+
+        if rating is not None:
+            try:
+        # Convert rating to an integer
+                rating = int(rating)
+        
+        # Validate the rating range
+                if not (1 <= rating <= 5):
+                    print({'error': 'Invalid rating. Please rate between 1 and 5.'})
+                else:
+                # Check if the user has already rated this story
+                    if Rating.objects.filter(user=user, story=story).exists():
+                        print({'error': 'You have already rated this story.'})
+                    else:
+                        Rating.objects.create(user=user, story=story, rating=rating)
+                        print({'success': 'Rating submitted successfully.'})
+                
+            except ValueError:
+                print({'error': 'Rating must be a number between 1 and 5.'})
+        else:
+            print({'error': 'Rating is required.'})
+
+
+       
+        return Response({'message': 'Comment created successfully'}, status=status.HTTP_201_CREATED)
+
+    
+    except Exception as e:
+        return Response({'message': 'An error occurred while creating the comment.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['GET'])
+def listComments(request,id):
+    try:
+        comments = Review.objects.filter(storyID=id)
+        print(comments)
+
+        # Get the page number from query parameters (defaults to page 1)
+        page = request.query_params.get('page', 1)
+        
+        # Initialize paginator with 12 items per page
+        paginator = Paginator(comments, 12)
+
+        try:
+            # Get the requested page
+            comments = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver the first page
+            comments = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range, deliver the last page
+            comments = paginator.page(paginator.num_pages)
+
+        # Serialize the paginated stories
+        serializer = CommentsSerializer(comments, many=True)
+
+        # Return the paginated response
+        return Response({
+            'comments': serializer.data,
+            'page': int(page),
+            'pages': paginator.num_pages
+        })
+
+    # Specific error handling for database-related errors
+    except DatabaseError as db_error:
+        message = {'message': 'Database error: ' + str(db_error)}
+        return Response(message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    # Handling invalid integer type for 'page' parameter
+    except ValueError as ve:
+        message = {'message': 'Invalid page number: ' + str(ve)}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+    # Catch any other unforeseen errors
+    except Exception as e:
+        message = {'message': 'An error occurred: ' + str(e)}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def deleteComment(request, id):
+    try:
+        # Get the comment or return 404 if not found
+        comment = get_object_or_404(Review, _id=id)
+
+        # Optional: Check if the requesting user is the owner of the comment
+        if comment.user != request.user:
+            return Response(
+                {'error': 'You do not have permission to delete this comment.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # Delete the comment
+        comment.delete()
+        return Response({'message': 'Comment deleted successfully.'}, status=status.HTTP_204_NO_CONTENT)
+
+    except Exception as e:
+        return Response(
+            {'error': 'An error occurred while deleting the comment.'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+    
+
 #------------------------------------------------------------------------
 CACHE_TIMEOUT = 60 * 15  # 15 minutes or adjust accordingly
 
 def trackViews(storyid):
     cache_key_views = f'story{storyid}views'
     
-    # Check if story views are cached
-    if cache.get(cache_key_views):
-        # Increment views count in cache
-        current_views = cache.get(cache_key_views)
-        cache.set(cache_key_views, current_views + 1, timeout=CACHE_TIMEOUT)
-    else:
-        # If views are not cached, initialize it to 1
-        cache.set(cache_key_views, 2000, timeout=CACHE_TIMEOUT)
 
-    # Retrieve the story from the database
-    story = Story.objects.get(_id=storyid)
+    try:
+        # Check if story views are cached
+        if cache.get(cache_key_views):
+            # Increment views count in cache
+            current_views = cache.get(cache_key_views)
+            cache.set(cache_key_views, current_views + 1, timeout=CACHE_TIMEOUT)
+        else:
+            # If views are not cached, initialize it to 1
+            cache.set(cache_key_views, 2000, timeout=CACHE_TIMEOUT)
     
-    # Before cache expires, update the views count in the database
-    if cache.ttl(cache_key_views) < CACHE_TIMEOUT / 2:  # Check if cache is close to expiring
-        story.views += cache.get(cache_key_views)  # Add cached views to the database
-        story.save()
+        # Retrieve the story from the database
+        story = Story.objects.get(_id=storyid)
+    
+        # Before cache expires, update the views count in the database
+        if cache.ttl(cache_key_views) < CACHE_TIMEOUT / 2:  # Check if cache is close to expiring
+            story.views += cache.get(cache_key_views)  # Add cached views to the database
+            story.save()
+    except Exception as e:
+        print(e ,'will tracking views')
 
     

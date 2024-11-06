@@ -5,6 +5,8 @@ import Message from '../Message/Message';
 import Loader from '../Message/Loader';
 import { Link } from 'react-router-dom';
 import { handleImageError } from '../../Helper/ImageUrlCorrect';
+import AOS from 'aos'
+import Aos from 'aos';
 
 
 const MostPopular = () => {
@@ -14,6 +16,8 @@ const MostPopular = () => {
     const hasLoadedRef = useRef(false); // Ref to track if data has already been loaded
 
     useEffect(() => {
+        AOS.init()
+
         const fetchBooks = async () => {
             if (!hasLoadedRef.current) { // Check if data has been loaded
                 setLoading(true);
@@ -44,7 +48,9 @@ const MostPopular = () => {
                     <Message>{''}</Message>
                 ) : (
                     <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
-                        <h1>Most Popular Story</h1>
+                        <h1 data-aos="flip-left" className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 drop-shadow-lg">
+                            Most Popular Story
+                        </h1>
                         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-16">
                             <div className="flex items-center justify-center flex-1 relative w-full overflow-hidden rounded-lg lg:order-last">
                                 <img
@@ -66,7 +72,7 @@ const MostPopular = () => {
 
                                 <Link
                                     to={`/book/${book._id}`}
-                                    className="mt-8 inline-block rounded bg-indigo-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-yellow-400"
+                                    className="mt-8 inline-block rounded bg-webb px-12 py-3 text-sm font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-teal-400"
                                 >
                                     Get Started Reading
                                 </Link>

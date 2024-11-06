@@ -17,6 +17,8 @@ import {
     listAdminChapterReducer,
     updateChapterReducer,
     updateStoryReducer,
+    createCommentReducer,
+    listCommentReducer,
 
 
 } from './Reducer/StoryReducer'
@@ -35,6 +37,9 @@ export const combineReducer = combineReducers( {
     createChapter : createChapterReducer,
     listChapter : listChapterReducer,
     readChapter : readChapterReducer,
+
+    createComment:createCommentReducer,
+    listComments:listCommentReducer,
 
     listAdminStory : listAdminStoryReducer,
     listAdminChapter : listAdminChapterReducer,

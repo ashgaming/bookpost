@@ -6,6 +6,7 @@ import { logoutUser, verifyUser } from '../../Redux/Action/UserAcrion';
 export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
     const dispatch = useDispatch();
+    
     const userLogin = useSelector(state=>state.userLogin)
     const { token } = userLogin
 
@@ -37,7 +38,7 @@ export default function Header() {
             <nav 
             className="font-sans flex flex-col bg-navPink sm:flex-row justify-between items-center py-2 px-6 shadow w-full overflow-x-hidden">
                 <div className="mb-2 sm:mb-0 text-center sm:text-left">
-                    <Link to="/" className="text-2xl no-underline text-grey-darkest hover:text-blue-dark font-bold">Astral Amor</Link>
+                    <Link to="/" className="text-2xl no-underline text-grey-darkest hover:text-blue-dark font-bold">epicsoulwoven</Link>
                     <br />
                     <span className="text-xs text-grey-dark">Where Destiny Meets Love</span>
                 </div>

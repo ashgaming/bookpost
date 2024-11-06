@@ -2,6 +2,7 @@ import {
     CREATE_STORY_REQUEST,
     CREATE_STORY_SUCCESS,
     CREATE_STORY_ERROR,
+    CREATE_STORY_RESET,
 
     CREATE_CHAPTER_REQUEST,
     CREATE_CHAPTER_SUCCESS,
@@ -37,12 +38,21 @@ import {
     LIST_ADMIN_CHAPTER_REQUEST,
     LIST_ADMIN_CHAPTER_SUCCESS,
     LIST_ADMIN_CHAPTER_ERROR,
+
     UPDATE_STORY_REQUEST,
     UPDATE_STORY_SUCCESS,
     UPDATE_STORY_ERROR,
     UPDATE_STORY_RESET,
-    CREATE_STORY_RESET,
+    
+    CREATE_COMMENT_REQUEST,
+    CREATE_COMMENT_SUCCESS,
+    CREATE_COMMENT_ERROR,
+    CREATE_COMMENT_RESET,
 
+    GET_COMMENT_REQUEST,
+    GET_COMMENT_SUCCESS,
+    GET_COMMENT_ERROR,
+    GET_COMMENT_RESET,
 
 } from '../Constant/StoryConstant'
 
@@ -113,7 +123,7 @@ export const listStoryReducer = (state = {
             return {
                 ...state,
                 loading: false,
-                error: action.payload.error,
+                error: action.payload.message,
             }
             
 
@@ -478,6 +488,88 @@ export const updateStoryReducer = (state = {
                 loading: false,
                 success:false,
             }
+          
+    }
+}
+
+export const createCommentReducer = (state = {
+    loading: false,
+}, action) => {
+    switch (action.type) {
+        case CREATE_COMMENT_REQUEST:
+            return {
+                ...state,
+                loading: true,
+                error: false,
+            }
+            
+
+        case CREATE_COMMENT_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                error: false,
+                comment: action.payload,
+                success:true,
+            }
+            
+
+        case CREATE_COMMENT_ERROR:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload.message,
+            }
+            
+
+        case CREATE_COMMENT_RESET:
+            return {
+                ...state,
+                loading: false,
+                success:false,
+                error: null,
+                comment:null
+            }
+
+        default:
+            return {...state}
+            
+    }
+}
+
+export const listCommentReducer = (state = {
+    loading: false,
+    comments: [],
+}, action) => {
+    switch (action.type) {
+        case GET_COMMENT_REQUEST:
+            return {
+                ...state,
+                loading: true,
+                error: false,
+                comments: [],
+            }
+
+        case GET_COMMENT_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                error: false,
+                comments: action.payload.comments,
+                page:action.payload.page,
+                pages:action.payload.pages
+            }
+
+        case LIST_ADMIN_CHAPTER_ERROR:
+            return {
+                ...state,
+                loading: false,
+                comments: [],
+                error: action.payload.error,
+            }
+
+        default:
+            return {...state}
           
     }
 }
